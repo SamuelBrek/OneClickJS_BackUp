@@ -1,0 +1,39 @@
+﻿@page "/usuarios/delete/{id:int}"
+@using OneClickJS.Data.Models
+@using OneClickJS.Data
+@inject HttpClient http
+@inject IJSRuntime JS
+@using System.Net.Http
+@using System.Net.Http.Json
+@using OneClickJS.Helpers
+@using static OneClickJS.Helpers.IJSExtensions
+@inject NavigationManager NavigationManager;
+
+<h1>¿Está seguro que desea borrar el usuario?</h1>
+
+<button class="btn btn-success" @onclick="ConfirmDelete">Confirmar</button>
+<a class="btn btn-danger" href="/usuarios">Cancelar</a>
+
+@code {
+    [Parameter]
+    public int id{ get; set; }
+    Usuario usuario;
+    protected override async Task OnInitializedAsync()
+    {
+        usuario = await http.GetFromJsonAsync<Usuario>($"api/Usuario/{id}");
+    }
+    protected async Task ConfirmDelete()
+    {
+        string mensajito = "¿Deseas borrar el registro?";
+        if (await JS.Confirm("Confirmar", mensajito, TipoMensajeSweetAlert.question))
+        {
+            var response = await http.DeleteAsync($"api/Usuario/Delete/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/usuarios");
+            }
+        }
+    
+        
+    }
+}

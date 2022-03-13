@@ -1,0 +1,114 @@
+﻿@page "/empleos/{id:int}"
+@using OneClickJS.Data.Models
+@using OneClickJS.Data
+@inject HttpClient http
+@using System.Net.Http
+@using System.Net.Http.Json
+@inject NavigationManager NavigationManager;
+<center>
+<div class="container justify-content-center">
+<h1>Detalles de empleo</h1>
+<br />
+    <div class="row justify-content-center">
+        <div class="col justify-content-center">
+            <a class="btn btn-info" href="/empleos/update/@empleo.IdEmpleo">Editar</a>
+        </div>
+        <div class="col justify-content-center">
+            <a class="btn btn-danger" href="/empleos">Regresar</a>
+        </div>
+
+    </div>
+    
+<br />
+
+</div>
+</center>
+
+
+<center>
+<div class="container justify-content-center">
+
+
+<div class="card text-center item">
+  <div class="card-header centerText">
+    Profesión/Empleo: @empleo.NombreEmpleo
+  </div>
+  <img src="img/empleos/@empleo.FotoEmpleo" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">Información</h5>
+    <p class="card-text">Descripción: @empleo.DescripcionEmpleo</p>
+    <p class="card-text">Prestaciones: @empleo.PrestacionesEmpleo</p>
+    <div class="row justify-content-center">
+        <div class="col">
+            <span class="badge vacantes">Vacantes</span> 
+        </div>
+        <div class="col">
+            <span class="badge sueldo">Sueldo</span> 
+        </div>
+        <div class="col">
+            <span class="badge tipo">Tipo</span> 
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col">
+            @empleo.VacantesEmpleo
+        </div>
+        <div class="col">
+            @empleo.SueldoEmpleo
+        </div>
+        <div class="col">
+            @empleo.TipoEmpleo
+        </div>
+    </div>
+    <br />
+    <div class="row justify-content-center">
+        <div class="col">
+            
+        </div>
+        <div class="col">
+            <a href="/postulacion/@empleo.IdEmpleo" class="btn btn-primary">Comenzar proceso</a>
+        </div>
+        <div class="col">
+            <span class="badge bg-primary">Municipio:</span> 
+            @empleo.MunicipioEmpleo
+        </div>
+    </div>
+   
+  </div>
+  <div class="card-footer justify-content-center">
+      <div class="col-auto justify-content-center">
+<span class="badge vacantes">@empleo.ObtenerNameCat2(categoria)</span> 
+<span class="badge tipo">@empleo.ObtenerNameEmpr2(empresa)</span> 
+      </div>
+
+  </div>
+</div>
+</div>
+</center>
+
+
+@code {
+    [Parameter]
+    public int id{ get; set; }
+    Empleo empleo = new Empleo();
+    Categoria categoria = new Categoria();
+    Empresa empresa = new Empresa();
+
+    protected override async Task OnInitializedAsync()
+    {
+            var response = await http.GetFromJsonAsync<Empleo>($"api/Empleo/{id}");
+           
+            if (response != null)
+            {
+                empleo = response;
+                int idCat = empleo.IdCategoria;
+                var response2 = await http.GetFromJsonAsync<Categoria>($"api/Categoria/{idCat}");
+                categoria = response2;
+                int idEmpr = empleo.IdEmpresa;
+                var response3 = await http.GetFromJsonAsync<Empresa>($"api/Empresa/{idEmpr}");
+                empresa = response3;
+            }
+        
+    }
+
+}

@@ -1,0 +1,69 @@
+﻿@page "/register"
+@using OneClickJS.Auth
+@inject HttpClient http
+@inject ILoginService loginService
+@inject NavigationManager NavigationManager
+@using OneClickJS.Data.Models
+@using System.Net.Http.Json
+
+
+<h3 class="display-4">Creación de cuenta</h3>
+<p class="mb-4 textStyle">Registrate e inicia sesión para una mejor experiencia</p>
+<EditForm Model="userInfo" OnValidSubmit="CrearUsuario">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-3">
+        <InputText placeholder="Nombre" @bind-Value="@userInfo.UserName" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4"></InputText>
+        <ValidationMessage For="@(() => userInfo.UserName)" />
+    </div>
+    <div class="form-group mb-3">
+        <InputText placeholder="Apellido" @bind-Value="@userInfo.UserLastName" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4"></InputText>
+        <ValidationMessage For="@(() => userInfo.UserLastName)" />
+    </div>
+    <div class="form-group mb-3">
+        <InputText id="inputEmail" type="email" @bind-Value="@userInfo.Email" placeholder="Correo Electrónico" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4"></InputText>
+        <ValidationMessage For="@(() => userInfo.Email)" />
+    </div>
+    <div class="form-group mb-3">
+        <InputText id="inputPassword" type="password" @bind-Value="@userInfo.Password" placeholder="Contraseña" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary"></InputText>
+        <ValidationMessage For="@(() => userInfo.Password)" />
+    </div>
+
+    <button type="submit" class="btn btn-info btn-block text-uppercase mb-2 rounded-pill shadow-sm">Registrarse</button>
+
+</EditForm>
+<br />
+
+
+<style>
+    .login,
+    .image {
+        min-height: 100vh;
+    }
+
+    .bg-image {
+        background-image: url('https://therichpost.com/wp-content/uploads/2021/02/login-split.jpg');
+        background-size: cover;
+        background-position: center center;
+    }
+
+    .sideInfo {
+        background-color: #fce055;
+        background-image: linear-gradient(319deg, #fce055 0%, #256eff 37%, #46237a 100%);
+    }
+
+    .textStyle {
+        color: white;
+    }
+</style>
+
+@code {
+    private UserInfo userInfo = new UserInfo();
+    //private UserToken userToken = new UserToken();
+
+    private async Task CrearUsuario()
+    {
+        //var result = await http.PostAsJsonAsync<UserToken>("api/Cuentas/Crear", userInfo!);
+        //await loginService.Login(result.Token);
+        //NavigationManager.NavigateTo("");
+    }
+}

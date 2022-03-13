@@ -1,0 +1,190 @@
+﻿@page "/empleos/add"
+@page "/empleos/update/{id:int}"
+@using Microsoft.AspNetCore.Hosting
+@using OneClickJS.Data.Models
+@using OneClickJS.Data
+@using System.Net.Http
+@using System.Net.Http.Json
+@inject HttpClient http
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JS
+@using static OneClickJS.Helpers.IJSExtensions;
+@using System.IO;
+@inject IWebHostEnvironment env;
+
+<div class="container">
+<h1>@(isUpdate ? $"Editar empleo con Id: {empleo.IdEmpleo}" : "Agregar empleo")</h1>
+
+<EditForm Model="@empleo">
+    <form class="container-border" @onsubmit="Save">
+        <div class="mb-2">
+            <label class="form-label" for="NombreEmpleo">Nombre de empleo</label>
+            <InputText class="form-control" @bind-Value="@empleo.NombreEmpleo" id="NombreEmpleo"></InputText>
+        </div>
+        <div class="mb-2">
+            <label class="form-label" for="Vacantes">Vacantes</label>
+            <InputNumber class="form-control" @bind-Value="@empleo.VacantesEmpleo" id="Vacantes"></InputNumber>
+        </div>
+        <div class="mb-2">
+            <label class="form-label" for="Prestaciones">Prestaciones</label>
+            <InputText class="form-control" @bind-Value="@empleo.PrestacionesEmpleo" id="Prestaciones"></InputText>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label" for="Sueldo">Sueldo</label>
+            <InputNumber class="form-control" @bind-Value="@empleo.SueldoEmpleo" id="Sueldo"></InputNumber>
+        </div>
+        <div class="mb-2">
+            <label class="form-label" for="Municipio">Municipio</label>
+            <InputText class="form-control" @bind-Value="@empleo.MunicipioEmpleo" id="Municipio"></InputText>
+        </div>
+        <div class="mb-2">
+            <label class="form-label" for="Descripcion">Descripción</label>
+            <InputText class="form-control" @bind-Value="@empleo.DescripcionEmpleo" id="Descripcion"></InputText>
+        </div>
+        <div class="mb-2">
+            <label class="form-label" for="tipo">Tipo de empleo</label>
+            <InputText class="form-control" @bind-Value="@empleo.TipoEmpleo" id="tipo"></InputText>
+        </div>
+        <div class="mb-2">
+            <h3>@Message</h3>
+            <label class="form-label" for="fotoEmpleo">Foto de empleo</label>
+            <InputFile class="form-control" OnChange="OnInputFileChange" multiple @bind-Value="@empleo.FotoEmpleo" id="fotoEmpleo"></InputFile>
+        </div>
+        <div class="mb-2">
+            <label class="form-label" for="categoriaId">Categoría a la que pertenece</label>
+            <InputSelect class="form-control" @bind-Value="@empleo.IdCategoria" id="categoriaId">
+                <option value="-1" disabled>Selecciona una categoría...</option>
+                @if (loading)
+                {
+                    <option value="0" disabled>Cargando...</option>
+                }else if(categorias != null){
+                    @foreach(var categoria in categorias)
+                    {
+                        <option value="@categoria.IdCategoria">@categoria.NombreCategoria</option>
+                    }
+                }
+            </InputSelect>
+        </div>
+         <div class="mb-2">
+            <label class="form-label" for="empresaId">Empresa a la que pertenece</label>
+            <InputSelect class="form-control" @bind-Value="@empleo.IdEmpresa" id="empresaId">
+                <option value="-1" disabled>Selecciona una empresa...</option>
+                @if (loading)
+                {
+                    <option value="0" disabled>Cargando...</option>
+                }else if(empresas != null){
+                    @foreach(var empresa in empresas)
+                    {
+                        <option value="@empresa.IdEmpresa">@empresa.NombreEmpresa</option>
+                    }
+                }
+            </InputSelect>
+        </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
+    </form>
+</EditForm>
+</div>
+@code{
+    [Parameter]
+    public int id{ get; set; }
+    public bool isUpdate { get; set; } = false;
+    Empleo empleo = new Empleo();
+    bool loading = true;
+    IList<Categoria> categorias;
+    IList<Empresa> empresas;
+    string Message = "Ningún archivo selecionado";
+    IReadOnlyList<IBrowserFile> selectedFiles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorias = await http.GetFromJsonAsync<IList<Categoria>>("api/Categoria");
+        empresas = await http.GetFromJsonAsync<IList<Empresa>>("api/Empresa");
+        isUpdate = id != 0;
+        if (isUpdate)
+        {
+            var response = await http.GetFromJsonAsync<Empleo>($"api/Empleo/{id}");
+            if (response != null)
+            {
+                empleo = response;
+            }
+        }
+        loading = false;
+    }
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFiles = e.GetMultipleFiles();
+        Message = $"{selectedFiles.Count} archivo seleccionado";
+
+        this.StateHasChanged();
+    }
+
+    protected async Task CancelarSubida()
+    {
+        string mensaje = "¿Deseas cancelar el procedimiento?";
+        if (await JS.Confirm("Cancelar", mensaje, TipoMensajeSweetAlert.warning))
+        {
+            NavigationManager.NavigateTo("/empleos");
+        }
+    }
+    protected async Task ConfirmarSubida()
+    {
+        await JS.SaveData("Procedimiento exitoso!", TipoMensajeSweetAlert.success);
+    }
+
+    protected async Task Save()
+    {
+
+        foreach(var file in selectedFiles)
+        {
+            var route = empleo.FotoEmpleo;
+            Stream stream = file.OpenReadStream();
+            
+            var path = $"{env.WebRootPath}\\img\\empleos\\{file.Name}";
+            
+            if (isUpdate)
+            {
+                var pathUpdate = $"{env.WebRootPath}\\img\\empleos\\";
+                string RutaArchivoDeNombreUnico = Path.Combine(pathUpdate, route);
+                FileInfo informacionArchivo = new FileInfo(RutaArchivoDeNombreUnico);
+                if (informacionArchivo.Exists)
+                {
+                    informacionArchivo.Delete();
+                }
+            }
+                empleo.FotoEmpleo = file.Name;
+                FileStream fs = File.Create(path);
+                await stream.CopyToAsync(fs);
+                stream.Close();
+                fs.Close();
+
+        }
+            Message = $"{selectedFiles.Count} archivo subido al servidor";
+            this.StateHasChanged();
+
+
+        HttpResponseMessage response;
+        if (isUpdate)
+        {
+            response = await http.PutAsJsonAsync<Empleo>($"api/Empleo/Update/{id}", empleo!);
+            if (response.IsSuccessStatusCode)
+            {
+                await ConfirmarSubida();
+            }
+        }
+        else
+        {
+            response = await http.PostAsJsonAsync<Empleo>("api/Empleo/Create", empleo!);
+            if (response.IsSuccessStatusCode)
+            {
+                await ConfirmarSubida();
+            }
+        }
+        Empleo saved = response.Content.ReadFromJsonAsync<Empleo>().Result;
+        await Task.Delay(1500);
+            NavigationManager.NavigateTo("/empleos");
+    }
+}
+

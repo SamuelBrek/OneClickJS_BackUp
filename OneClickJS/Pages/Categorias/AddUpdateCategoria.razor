@@ -1,0 +1,84 @@
+﻿@page "/categorias/add"
+@page "/categorias/update/{id:int}"
+@using OneClickJS.Data.Models
+@using OneClickJS.Data
+@using System.Net.Http
+@using System.Net.Http.Json
+@inject HttpClient http
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+@using static OneClickJS.Helpers.IJSExtensions
+
+
+
+<div class="container">
+<h1>@(isUpdate ? $"Editar Categoria con Id: {categoria.IdCategoria}" : "Agregar categoria")</h1>
+
+<EditForm Model="@categoria">
+    <form class="container-border" @onsubmit="Save" >
+
+        <div class="mb-2">
+            <label class="form-label" for="nameCategoria">Nombre de categoría</label>
+            <InputText class="form-control" @bind-Value="@categoria.NombreCategoria" id="nameCategoria"></InputText>
+        </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
+    </form>
+</EditForm>
+</div>
+@code {
+    [Parameter]
+    public int id{ get; set; }
+    public bool isUpdate { get; set; } = false;
+    Categoria categoria = new Categoria();
+    //private Categoria categoria = new() { };
+    protected override async Task OnInitializedAsync()
+    {
+        isUpdate = id != 0;
+        if (isUpdate)
+        {
+            var response = await http.GetFromJsonAsync<Categoria>($"api/Categoria/{id}");
+            if (response != null)
+            {
+                categoria = response;
+            }
+        }
+    }
+
+    protected async Task CancelarSubida()
+    {
+        string mensaje = "¿Deseas cancelar el procedimiento?";
+        if (await JS.Confirm("Cancelar", mensaje, TipoMensajeSweetAlert.warning))
+        {
+            NavigationManager.NavigateTo("/categorias");
+        }
+    }
+    protected async Task ConfirmarSubida()
+    {
+        await JS.SaveData("Procedimiento exitoso!", TipoMensajeSweetAlert.success);
+    }
+
+    protected async Task Save()
+    {
+        HttpResponseMessage? response;
+        if (isUpdate)
+        {
+            response = await http.PutAsJsonAsync<Categoria>($"api/Categoria/Update/{id}", categoria!);
+            if (response.IsSuccessStatusCode)
+            {
+                await ConfirmarSubida();
+            }
+        }
+        else
+        {
+            response = await http.PostAsJsonAsync<Categoria>("api/Categoria/Create", categoria!);
+            if (response.IsSuccessStatusCode)
+            {
+                await ConfirmarSubida();
+            }
+        }
+        Categoria? saved = response.Content.ReadFromJsonAsync<Categoria>().Result;
+        await Task.Delay(1500);
+            NavigationManager.NavigateTo("/categorias");
+    }
+}

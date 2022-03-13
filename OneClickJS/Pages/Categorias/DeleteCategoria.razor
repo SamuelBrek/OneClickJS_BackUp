@@ -1,0 +1,35 @@
+﻿@page "/categorias/delete/{id:int}"
+@using OneClickJS.Data.Models
+@using OneClickJS.Data
+@inject HttpClient http
+@inject IJSRuntime JS
+@using System.Net.Http
+@using System.Net.Http.Json
+@using static OneClickJS.Helpers.IJSExtensions
+@inject NavigationManager NavigationManager;
+
+<h1>¿Está seguro que desea borrar la categoria?</h1>
+
+<button class="btn btn-success" @onclick="ConfirmDelete">Confirmar</button>
+<a class="btn btn-danger" href="/categorias">Cancelar</a>
+
+@code {
+    [Parameter]
+    public int id{ get; set; }
+    Categoria categoria;
+    protected override async Task OnInitializedAsync()
+    {
+        categoria = await http.GetFromJsonAsync<Categoria>($"api/Categoria/{id}");
+    }
+    protected async Task ConfirmDelete()
+    {
+            
+            var response = await http.DeleteAsync($"api/Categoria/Delete/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/categorias");
+            }
+        
+        
+    }
+}

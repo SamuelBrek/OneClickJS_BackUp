@@ -1,0 +1,179 @@
+﻿@page "/empresas/add"
+@page "/empresas/update/{id:int}"
+@using Microsoft.AspNetCore.Hosting;
+@using OneClickJS.Data.Models;
+@using OneClickJS.Data;
+@inject HttpClient http;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JS;
+@using System.IO;
+@inject IWebHostEnvironment env;
+@using static OneClickJS.Helpers.IJSExtensions;
+
+<div class="container">
+    <h1>@(isUpdate ? $"Editar empresa con Id: {empresa.IdEmpresa}" : "Agregar empresa")</h1>
+
+    <EditForm Model="@empresa">
+        <form class="container-border" @onsubmit="Save">
+            <div class="mb-2">
+                <label class="form-label" for="nameEmpresa">Nombre de empresa</label>
+                <InputText class="form-control" @bind-Value="@empresa.NombreEmpresa" id="nameEmpresa"></InputText>
+            </div>
+            <div class="mb-2">
+                <label class="form-label" for="director">Nombre de director</label>
+                <InputText class="form-control" @bind-Value="@empresa.DirectorEmpresa" id="director"></InputText>
+            </div>
+            <div class="mb-2">
+                <label class="form-label" for="calle">Calle de empresa</label>
+                <InputText class="form-control" @bind-Value="@empresa.CalleEmpresa" id="calle"></InputText>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label" for="numero">Número de empresa</label>
+                <InputText class="form-control" @bind-Value="@empresa.NumeroEmpresa" id="numero"></InputText>
+            </div>
+            <div class="mb-2">
+                <label class="form-label" for="cruzamiento">Cruzamiento de empresa</label>
+                <InputText class="form-control" @bind-Value="@empresa.CruzamientoEmpresa" id="cruzamiento"></InputText>
+            </div>
+            <div class="mb-2">
+                <label class="form-label" for="colonia">Colonia de empresa</label>
+                <InputText class="form-control" @bind-Value="@empresa.ColoniaEmpresa" id="colonia"></InputText>
+            </div>
+            <div class="mb-2">
+                <label class="form-label" for="telefono">Teléfono de empresa</label>
+                <InputText class="form-control" @bind-Value="@empresa.TelefonoEmpresa" id="telefono"></InputText>
+            </div>
+            <div class="mb-2">
+                <label class="form-label" for="municipio">Municipio de empresa</label>
+                <InputText class="form-control" @bind-Value="@empresa.MunicipioEmpresa" id="municipio"></InputText>
+            </div>
+
+
+            @if (isUpdate == false)
+            {
+                <div class="mb-2">
+                    <label class="form-label" for="nivelEmpresa">Nivel</label>
+                    <InputText class="form-control" @bind-Value="@empresa.NivelEmpresa" id="nivelEmpresa" placeholder="Empresa">
+                    </InputText>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="correoEmpresa">Correo empresa</label>
+                    <InputText class="form-control" @bind-Value="@empresa.CorreoEmpresa" id="correoEmpresa"></InputText>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="contraseniaEmpresa">Contraseña empresa</label>
+                    <InputText class="form-control" @bind-Value="@empresa.ContraseniaEmpresa" id="contraseniaEmpresa"></InputText>
+                </div>
+
+            }
+            <div class="mb-2">
+                <h3>@Message</h3>
+                <label class="form-label" for="FotoEmpresa">Foto de empresa</label>
+                <InputFile class="form-control" OnChange="OnInputFileChange" multiple @bind-Value="@empresa.FotoEmpresa" id="FotoEmpresa"></InputFile>
+            </div>
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
+        </form>
+    </EditForm>
+</div>
+@code {
+    [Parameter]
+    public int id { get; set; }
+    public bool isUpdate { get; set; } = false;
+    Empresa empresa = new Empresa();
+    string Message = "Ningún archivo selecionado";
+    IReadOnlyList<IBrowserFile> selectedFiles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isUpdate = id != 0;
+        if (isUpdate)
+        {
+            var response = await http.GetFromJsonAsync<Empresa>($"api/Empresa/{id}");
+            if (response != null)
+            {
+                empresa = response;
+            }
+        }
+    }
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFiles = e.GetMultipleFiles();
+        Message = $"{selectedFiles.Count} archivo seleccionado";
+
+        this.StateHasChanged();
+
+    }
+
+
+
+    protected async Task CancelarSubida()
+    {
+        string mensaje = "¿Deseas cancelar el procedimiento?";
+        if (await JS.Confirm("Cancelar", mensaje, TipoMensajeSweetAlert.warning))
+        {
+            NavigationManager.NavigateTo("/empresas");
+        }
+    }
+    protected async Task ConfirmarSubida()
+    {
+        await JS.SaveData("Procedimiento exitoso!", TipoMensajeSweetAlert.success);
+    }
+
+    protected async Task Save()
+    {
+
+        foreach (var file in selectedFiles)
+        {
+            var route = empresa.FotoEmpresa;
+            Stream stream = file.OpenReadStream();
+
+            var path = $"{env.WebRootPath}\\img\\empresas\\{file.Name}";
+
+            if (isUpdate)
+            {
+                var pathUpdate = $"{env.WebRootPath}\\img\\empresas\\";
+                string RutaArchivoDeNombreUnico = Path.Combine(pathUpdate, route);
+                FileInfo informacionArchivo = new FileInfo(RutaArchivoDeNombreUnico);
+                if (informacionArchivo.Exists)
+                {
+                    informacionArchivo.Delete();
+                }
+            }
+            empresa.FotoEmpresa = file.Name;
+            FileStream fs = File.Create(path);
+            await stream.CopyToAsync(fs);
+            stream.Close();
+            fs.Close();
+
+        }
+        Message = $"{selectedFiles.Count} archivo subido al servidor";
+        this.StateHasChanged();
+
+        HttpResponseMessage response;
+        if (isUpdate)
+        {
+            response = await http.PutAsJsonAsync<Empresa>($"api/Empresa/Update/{id}", empresa);
+            if (response.IsSuccessStatusCode)
+            {
+                await ConfirmarSubida();
+            }
+        }
+        else
+        {
+            response = await http.PostAsJsonAsync<Empresa>("api/Empresa/Create", empresa);
+            if (response.IsSuccessStatusCode)
+            {
+                await ConfirmarSubida();
+            }
+        }
+        Empresa saved = response.Content.ReadFromJsonAsync<Empresa>().Result;
+        await Task.Delay(1500);
+        NavigationManager.NavigateTo("/empresas");
+    }
+}
+

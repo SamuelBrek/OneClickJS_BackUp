@@ -1,0 +1,57 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Mvc
+@using OneClickJS.Data.Models
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using OneClickJS.Data
+@inject HttpClient http
+@using Newtonsoft.Json
+@inject IJSRuntime JS
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Text.Json
+@using static OneClickJS.Helpers.IJSExtensions
+@inject NavigationManager NavigationManager
+
+
+<h3 class="display-4">Inicio de sesión</h3>
+<p class="mb-4 textStyle">Inicia sesión para un mejor recorrido en la aplicación</p>
+<form method="post">
+    <div class="form-group mb-3">
+        <input id="inputEmail" type="email" placeholder="Correo Electrónico" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4">
+    </div>
+    <div class="form-group mb-3">
+        <input id="inputPassword" type="password" placeholder="Contraseña" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
+    </div>
+
+    <button type="submit" class="btn btn-info btn-block text-uppercase mb-2 rounded-pill shadow-sm">Ingresar</button>
+
+</form>
+<br />
+<a href="/register" style="color:white;">¿No tienes cuenta? Regístrate aquí</a>
+
+<style>
+    .login,
+    .image {
+        min-height: 100vh;
+    }
+
+    .bg-image {
+        background-image: url('https://therichpost.com/wp-content/uploads/2021/02/login-split.jpg');
+        background-size: cover;
+        background-position: center center;
+    }
+
+    .sideInfo {
+        background-color: #fce055;
+        background-image: linear-gradient(319deg, #fce055 0%, #256eff 37%, #46237a 100%);
+    }
+
+    .textStyle {
+        color: white;
+    }
+</style>
+
+@code {
+
+}
