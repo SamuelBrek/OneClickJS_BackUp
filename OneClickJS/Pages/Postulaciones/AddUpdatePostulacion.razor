@@ -1,0 +1,171 @@
+﻿@page "/postulaciones/add/{id2:int}"
+@page "/postulaciones/update/{id:int}"
+
+@using OneClickJS.Data.Models
+@using OneClickJS.Data
+@using System.Net.Http
+@inject IJSRuntime JS
+@using System.Net.Http.Json
+@using System.IO
+@using static OneClickJS.Helpers.IJSExtensions
+@inject HttpClient http
+@using Microsoft.AspNetCore.Hosting;
+@inject IWebHostEnvironment env
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <h1>@(isUpdate ? $"Editar postulacion con Id: {postulacion.IdPostulacion}" : "Postularme")</h1>
+
+    <EditForm Model="@postulacion">
+        <form class="container-border" @onsubmit="Save">
+            @if (isUpdate == false)
+            {
+                <div class="mb-2">
+                    <h3>@Message</h3>
+                    <label class="form-label" for="archivoPost">Sube aquí tu CV (Currículum Vitae)</label>
+                    <InputFile class="form-control" OnChange="OnInputFileChange" multiple @bind-Value="@postulacion.ArchivoPostulacion" id="archivoPost"></InputFile>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="usuarioReferente">Usuario referente</label>
+                    <InputNumber class="form-control" @bind-Value="@postulacion.IdUsuario" id="usuarioReferente"></InputNumber>
+                </div>
+                <div class="mb-2">
+                    <label for="disabledTextInput" class="form-label">Empleo referente</label>
+                    <input type="text" id="disabledTextInput" class="form-control" placeholder="@id2" disabled>
+                </div>
+                <div class="mb-2">
+                    <label for="disabledTextInput2" class="form-label">Estado actual de postulación</label>
+                    <input type="text" id="disabledTextInput2" class="form-control" placeholder="Pendiente" disabled>
+                </div>
+            }
+            @if (isUpdate)
+            {
+                <div class="mb-2">
+                    <label class="form-label" for="estadoPostulacion">Estado de la postulación</label>
+                    <InputText class="form-control" @bind-Value="@postulacion.EstadoPostulacion" id="estadoPostulacion"></InputText>
+                </div>
+            }
+
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
+        </form>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    [Parameter]
+    public int id2 { get; set; }
+    public bool isUpdate { get; set; } = false;
+    Postulacione postulacion = new Postulacione();
+    string Message = "Ningún archivo selecionado";
+    IReadOnlyList<IBrowserFile> selectedFiles;
+    protected override async Task OnInitializedAsync()
+    {
+        isUpdate = id != 0;
+        if (isUpdate)
+        {
+            var response = await http.GetFromJsonAsync<Postulacione>($"api/Postulacion/{id}");
+            if (response != null)
+            {
+                postulacion = response;
+            }
+        }
+    }
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFiles = e.GetMultipleFiles();
+        Message = $"{selectedFiles.Count} archivo seleccionado";
+
+        this.StateHasChanged();
+
+    }
+
+
+    protected async Task CancelarSubida()
+    {
+        string mensaje = "¿Deseas cancelar el procedimiento?";
+        if (await JS.Confirm("Cancelar", mensaje, TipoMensajeSweetAlert.warning))
+        {
+            if (isUpdate)
+            {
+                NavigationManager.NavigateTo($"/postulaciones/{id}");
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"/empleos/{id2}");
+            }
+        }
+    }
+    protected async Task ConfirmarSubida()
+    {
+        await JS.SaveData("Procedimiento exitoso!", TipoMensajeSweetAlert.success);
+    }
+
+    protected async Task Save()
+    {
+        if (isUpdate)
+        {
+
+        }
+        else
+        {
+            foreach (var file in selectedFiles)
+            {
+                var route = postulacion.ArchivoPostulacion;
+                Stream stream = file.OpenReadStream();
+
+                var path = $"{env.WebRootPath}\\pdf\\{file.Name}";
+
+                //if (isUpdate)
+                //{
+                //    var pathUpdate = $"{env.WebRootPath}\\pdf\\";
+                //    string RutaArchivoDeNombreUnico = Path.Combine(pathUpdate, route);
+                //    FileInfo informacionArchivo = new FileInfo(RutaArchivoDeNombreUnico);
+                //    if (informacionArchivo.Exists)
+                //    {
+                //        informacionArchivo.Delete();
+                //    }
+                //}
+                postulacion.ArchivoPostulacion = file.Name;
+                FileStream fs = File.Create(path);
+                await stream.CopyToAsync(fs);
+                stream.Close();
+                fs.Close();
+            }
+        }
+
+
+        HttpResponseMessage response;
+        postulacion.IdEmpleo = id2;
+        if (isUpdate)
+        {
+            response = await http.PutAsJsonAsync<Postulacione>($"api/Postulacion/Update/{id}", postulacion);
+            if (response.IsSuccessStatusCode)
+            {
+                await ConfirmarSubida();
+            }
+        }
+        else
+        {
+            postulacion.EstadoPostulacion = "Pendiente";
+            response = await http.PostAsJsonAsync<Postulacione>("api/Postulacion/Create", postulacion);
+            if (response.IsSuccessStatusCode)
+            {
+                await ConfirmarSubida();
+            }
+        }
+        Postulacione saved = response.Content.ReadFromJsonAsync<Postulacione>().Result;
+        await Task.Delay(1500);
+        if (isUpdate)
+        {
+            NavigationManager.NavigateTo("/postulaciones");
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"/empleos/{id2}");
+        }
+
+    }
+}

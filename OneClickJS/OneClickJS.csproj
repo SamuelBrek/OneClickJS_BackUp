@@ -23,6 +23,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\img\empresas\" />
     <Folder Include="wwwroot\img\empleos\" />
+    <Folder Include="wwwroot\pdf\" />
   </ItemGroup>
 
 </Project>

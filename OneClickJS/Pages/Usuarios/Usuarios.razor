@@ -17,23 +17,6 @@
         <div class="title__content">
             <h1>Usuarios registrados</h1>
         </div>
-        @*        <AuthorizeView>
-            <Authorized>
-            <div class="title_btn">
-            <a href="/usuarios/add" class="btn btn-success">
-            <i class="oi oi-plus"></i>
-            &nbsp;
-            Agregar
-            </a>
-            </div>
-            </Authorized>
-            <NotAuthorized>
-            No tiene permisos para agregar
-            </NotAuthorized>
-            <Authorizing>
-            Autorizando...
-            </Authorizing>
-            </AuthorizeView>*@
         <div class="title_btn">
             <a href="/usuarios/add" class="btn btn-success">
                 <i class="oi oi-plus"></i>
@@ -42,8 +25,6 @@
             </a>
         </div>
     </div>
-
-
     <br />
     <p>Esta lista refleja los usuarios registrados</p>
 
@@ -69,8 +50,7 @@
                         <div class="card item" style="max-width: 21rem">
                             <div class="card-header justify-content-center">
                                 <div class="col-auto justify-content-center">
-                                    <span class="badge tipo">Usuario</span>
-
+                                    <span class="badge tipo">@usuario.NivelUsuario</span>
                                 </div>
                             </div>
                             <img src="img/user_icon.png" class="card-img-top" alt="...">

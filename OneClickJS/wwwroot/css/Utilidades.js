@@ -31,3 +31,7 @@ function CustomSave(titulo, icono) {
         timer: 1500
     })
 }
+
+function OpenNewTab(pdfName) {
+    window.open('/pdf/' + pdfName);
+}

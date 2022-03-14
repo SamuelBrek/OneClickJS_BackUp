@@ -13,97 +13,96 @@
 @inject IWebHostEnvironment env
 
 <div class="container">
-<div class="title">
-    <div class = "title__content">
-        <h1>Empresas registradas</h1>
-    </div>
-    <div class = "title_btn">
-        <a href="/empresas/add" class="btn btn-success">
-            <i class="oi oi-plus"></i>
-            &nbsp;
-            Agregar
-        </a>
-    </div>
-</div>
-
-<p>Esta lista refleja las empresas registradas</p>
-
-<div class="input-group mb-2 mr-sm-2">
-      <input type="text" class="form-control" @bind="nombreEmpresaFiltro" placeholder="Filtro por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
-      <button class="btn btn-primary" type="button" id="button-addon2" @onclick="Filtrar"><i class="oi oi-magnifying-glass"></i></button>
-      <button class="btn btn-danger" type="button" id="button-addon2" @onclick="Limpiar"><i class="oi oi-delete"></i></button>
-</div>
-
-
-
-
-@if (empresas == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <br />
-    <div class="row row-cols-1 row-cols-md-3">
-        @foreach (var empresa in empresas)
-            {
-                <center>
-                    <div class="col">
-                    <div class="card item" style="max-width: 21rem">
-                        <div class="card-header justify-content-center">
-                            <div class="col-auto justify-content-center">
-                            <span class="badge tipo">Empresa</span> 
-                            
-                            </div>
-                        </div>
-                      <img src="img/empresas/@empresa.FotoEmpresa" class="card-img-top" alt="...">
-                          <div class="card-body">
-                                <h5 class="card-title">@empresa.NombreEmpresa</h5>
-                                <p class="card-text">Dirección: @empresa.Direccion()</p>
-                                <div class="row justify-content-center">
-
-                                    <div class="col">
-                                        <span class="badge sueldo span2">Teléfono</span> 
-                                    </div>
-                                    <div class="col">
-                                        <span class="badge tipo2 span2">Municipio</span> 
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center">
-
-                                    <div class="col">
-                                        @empresa.TelefonoEmpresa
-                                    </div>
-                                    <div class="col">
-                                        @empresa.MunicipioEmpresa
-                                    </div>
-                                </div>
-                                <br/>
-                                <span class="icon">
-                                    <a href="/empresas/@empresa.IdEmpresa" class="btn btn-info btnCurv" title="Detalle"><i class="oi oi-eye"></i></a>
-                              </span>
-                        
-                             <span class="icon">
-                                    <a class="btn btn-danger btnCurv" title="Eliminar" @onclick="() => ConfirmDelete(empresa.IdEmpresa, empresa.NombreEmpresa, empresa.FotoEmpresa)"><i class="oi oi-trash"></i></a>
-                             </span>
-                               <!--<a href="#" class="btn btn-primary">Detalles</a>--> 
-                          </div>
-                           <div class="card-footer justify-content-center">
-                           
-                           </div>
-                    </div>
-                </div>
-                </center>
-            }
+    <div class="title">
+        <div class="title__content">
+            <h1>Empresas registradas</h1>
         </div>
+        <div class="title_btn">
+            <a href="/empresas/add" class="btn btn-success">
+                <i class="oi oi-plus"></i>
+                &nbsp;
+                Agregar
+            </a>
+        </div>
+    </div>
+
+    <p>Esta lista refleja las empresas registradas</p>
+
+    <div class="input-group mb-2 mr-sm-2">
+        <input type="text" class="form-control" @bind="nombreEmpresaFiltro" placeholder="Filtro por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
+        <button class="btn btn-primary" type="button" id="button-addon2" @onclick="Filtrar"><i class="oi oi-magnifying-glass"></i></button>
+        <button class="btn btn-danger" type="button" id="button-addon2" @onclick="Limpiar"><i class="oi oi-delete"></i></button>
+    </div>
 
 
 
 
-}
-<br />
+    @if (empresas == null)
+    {
+            <p><em>Cargando...</em></p>
+    }
+    else
+    {
+            <br />
+            <div class="row row-cols-1 row-cols-md-3">
+            @foreach (var empresa in empresas)
+            {
+                        <center>
+                            <div class="col">
+                                <div class="card item" style="max-width: 21rem">
+                                    <div class="card-header justify-content-center">
+                                        <div class="col-auto justify-content-center">
+                                            <span class="badge tipo">Empresa</span>
 
-<Paginacion PaginasTotales="paginasTotales" PaginaActual="paginaActual" PaginaSeleccionada="PaginaSeleccionada"></Paginacion>
+                                        </div>
+                                    </div>
+                                    <img src="img/empresas/@empresa.FotoEmpresa" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@empresa.NombreEmpresa</h5>
+                                        <p class="card-text">Dirección: @empresa.Direccion()</p>
+                                        <div class="row justify-content-center">
+
+                                            <div class="col">
+                                                <span class="badge sueldo span2">Teléfono</span>
+                                            </div>
+                                            <div class="col">
+                                                <span class="badge tipo2 span2">Municipio</span>
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+
+                                            <div class="col">
+                                        @empresa.TelefonoEmpresa
+                                            </div>
+                                            <div class="col">
+                                        @empresa.MunicipioEmpresa
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <span class="icon">
+                                            <a href="/empresas/@empresa.IdEmpresa" class="btn btn-info btnCurv" title="Detalle"><i class="oi oi-eye"></i></a>
+                                        </span>
+
+                                        <span class="icon">
+                                            <a class="btn btn-danger btnCurv" title="Eliminar" @onclick="() => ConfirmDelete(empresa.IdEmpresa, empresa.NombreEmpresa, empresa.FotoEmpresa)"><i class="oi oi-trash"></i></a>
+                                        </span>
+                                        <!--<a href="#" class="btn btn-primary">Detalles</a>-->
+                    </div>
+                                    <div class="card-footer justify-content-center">
+                                    </div>
+                                </div>
+                            </div>
+                        </center>
+            }
+            </div>
+
+
+
+
+    }
+    <br />
+
+    <Paginacion PaginasTotales="paginasTotales" PaginaActual="paginaActual" PaginaSeleccionada="PaginaSeleccionada"></Paginacion>
 </div>
 @code {
     private readonly string api = "api/Empresa/GetEmpresas2";
@@ -113,7 +112,7 @@ else
     private int paginasTotales;
     protected override async Task OnInitializedAsync()
     {
-        await CargarEmpresas(); 
+        await CargarEmpresas();
     }
 
     private async Task PaginaSeleccionada(int pagina)
@@ -140,13 +139,13 @@ else
         if (await JS.Confirm("Confirmar borrado", mensaje, TipoMensajeSweetAlert.question))
         {
             var response = await http.DeleteAsync($"api/Empresa/Delete/{id}");
-                var pathUpdate = $"{env.WebRootPath}\\img\\empresas\\";
-                string RutaArchivoDeNombreUnico = Path.Combine(pathUpdate, fotoEmpresa);
-                FileInfo informacionArchivo = new FileInfo(RutaArchivoDeNombreUnico);
-                if (informacionArchivo.Exists)
-                {
-                    informacionArchivo.Delete();
-                }
+            var pathUpdate = $"{env.WebRootPath}\\img\\empresas\\";
+            string RutaArchivoDeNombreUnico = Path.Combine(pathUpdate, fotoEmpresa);
+            FileInfo informacionArchivo = new FileInfo(RutaArchivoDeNombreUnico);
+            if (informacionArchivo.Exists)
+            {
+                informacionArchivo.Delete();
+            }
         }
         await PaginaSeleccionada(paginaActual);
     }
@@ -157,11 +156,11 @@ else
         if (httpResponse.IsSuccessStatusCode)
         {
             paginasTotales = int.Parse(httpResponse.Headers.GetValues("totalPaginas").FirstOrDefault());
-            
+
             var responsesString = await httpResponse.Content.ReadAsStringAsync();
             empresas = JsonSerializer.Deserialize<IList<Empresa>>(responsesString,
-                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true});
-                
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
         }
         else
         {

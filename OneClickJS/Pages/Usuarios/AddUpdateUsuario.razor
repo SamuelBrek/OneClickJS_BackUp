@@ -15,43 +15,53 @@
 <div class="container">
     <h1>@(isUpdate ? $"Editar Usuario con Id: {usuario.IdUsuario}" : "Agregar usuario")</h1>
 
-<EditForm Model="@usuario">
-    <form class="container-border" @onsubmit="Save">
-        <div class="mb-2">
-            <label class="form-label" for="name">Nombre</label>
-            <InputText class="form-control" @bind-Value="@usuario.NombreUsuario" id="name"></InputText>
-        </div>
-        <div class="mb-2">
-            <label class="form-label" for="last-name">Apellido</label>
-            <InputText class="form-control" @bind-Value="@usuario.ApellidoUsuario" id="last-name"></InputText>
-        </div>
-        @if(isUpdate == false)
-        {
+    <EditForm Model="@usuario">
+        <form class="container-border" @onsubmit="Save">
             <div class="mb-2">
-                <label class="form-label" for="correo">Correo</label>
-                <InputText class="form-control" @bind-Value="@usuario.CorreoUsuario" id="correo"></InputText>
-             </div>
-             <div class="mb-2">
-                <label class="form-label" for="password">Contraseña</label>
-                <InputText class="form-control" @bind-Value="@usuario.ContraseñaUsuario" id="password"></InputText>
+                <label class="form-label" for="name">Nombre</label>
+                <InputText class="form-control" @bind-Value="@usuario.NombreUsuario" id="name"></InputText>
             </div>
             <div class="mb-2">
-                <label class="form-label" for="nivel">Nivel</label>
-                <InputText class="form-control" @bind-Value="@usuario.NivelUsuario" id="nivel" placeholder="Usuario">
-                </InputText>
+                <label class="form-label" for="last-name">Apellido</label>
+                <InputText class="form-control" @bind-Value="@usuario.ApellidoUsuario" id="last-name"></InputText>
             </div>
-        }
-        <button type="submit" class="btn btn-success">Guardar</button>
-        <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
-    </form>
-</EditForm>
+            @if (isUpdate == false)
+            {
+                <div class="mb-2">
+                    <label class="form-label" for="correo">Correo</label>
+                    <InputText class="form-control" @bind-Value="@usuario.CorreoUsuario" id="correo"></InputText>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label" for="password">Contraseña</label>
+                    <InputText class="form-control" @bind-Value="@usuario.ContraseñaUsuario" id="password"></InputText>
+                </div>
+                <div class="mb-2">
+                    <label for="disabledTextInput" class="form-label">Nivel</label>
+                    <input type="text" id="disabledTextInput" class="form-control" placeholder="Usuario" disabled>
+                </div>
+
+
+            }
+            @if (isUpdate)
+            {
+                <div class="mb-2">
+                    <label class="form-label" for="nivel">Nivel</label>
+                    <InputText class="form-control" @bind-Value="@usuario.NivelUsuario" id="nivel" placeholder="Usuario">
+                    </InputText>
+                </div>
+            }
+
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
+        </form>
+    </EditForm>
 </div>
 
 
 
-@code{
+@code {
     [Parameter]
-    public int id{ get; set; }
+    public int id { get; set; }
     public bool isUpdate { get; set; } = false;
     Usuario usuario = new Usuario();
     protected override async Task OnInitializedAsync()
@@ -83,6 +93,7 @@
 
     protected async Task Save()
     {
+
         HttpResponseMessage response;
         if (isUpdate)
         {
@@ -94,7 +105,7 @@
         }
         else
         {
-
+            usuario.NivelUsuario = "Usuario";
             response = await http.PostAsJsonAsync<Usuario>("api/Usuario/Create", usuario);
             if (response.IsSuccessStatusCode)
             {

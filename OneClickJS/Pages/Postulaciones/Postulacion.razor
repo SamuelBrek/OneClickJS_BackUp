@@ -1,0 +1,117 @@
+﻿@page "/postulaciones"
+@using Microsoft.AspNetCore.Hosting
+@using OneClickJS.Data.Models
+@using OneClickJS.Data
+@inject HttpClient http
+@inject IJSRuntime JS
+@using System.Net.Http
+@using System.Net.Http.Json
+@inject IWebHostEnvironment env
+@using System.Text.Json
+@using System.IO
+@using static OneClickJS.Helpers.IJSExtensions
+
+<div class="container">
+    <h3>Postulacion</h3>
+    <br />
+    @if (postulaciones == null)
+    {
+        <p><em>Cargando...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr class="table-dark">
+                    <th>Identificador</th>
+                    <th>Usuario referente</th>
+                    <th>Empleo referente</th>
+                    <th>Estado actual</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var postulacion in postulaciones)
+                {
+                    <tr>
+                        <td>@postulacion.IdPostulacion</td>
+                        <td>@postulacion.ObtenerNameUsuario(usuarios)</td>
+                        <td>@postulacion.ObtenerNameEmpleo(empleos)</td>
+                        <td>@postulacion.EstadoPostulacion</td>
+                        <td>
+                            <span class="icon">
+                                <a href="/postulaciones/@postulacion.IdPostulacion" class="btn btn-info btnCurv" title="Detalle"><i class="oi oi-eye"></i></a>
+                            </span>
+                            <span class="icon">
+                                <a class="btn btn-danger btnCurv" title="Eliminar" @onclick="() => ConfirmDelete(postulacion.IdPostulacion, postulacion.ArchivoPostulacion)"><i class="oi oi-trash"></i></a>
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <Paginacion PaginasTotales="paginasTotales" PaginaActual="paginaActual"
+                PaginaSeleccionada="PaginaSeleccionada">
+        </Paginacion>
+    }
+</div>
+@code {
+    private readonly string api = "api/Postulacion/GetPostulaciones2";
+    private IList<Postulacione> postulaciones;
+    private readonly string api2 = "api/Empleo/";
+    private IList<Empleo> empleos;
+    private readonly string api3 = "api/Usuario/";
+    private IList<Usuario> usuarios;
+    private int paginaActual = 1;
+    private int paginasTotales;
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarPostulaciones();
+    }
+    private async Task PaginaSeleccionada(int pagina)
+    {
+        paginaActual = pagina;
+        await CargarPostulaciones(pagina);
+    }
+
+    protected async Task ConfirmDelete(int id, string archivoPostulacion)
+    {
+        string mensaje = $"¿Deseas borrar la presente postulación?";
+        if (await JS.Confirm("Confirmar borrado", mensaje, TipoMensajeSweetAlert.question))
+        {
+            var response = await http.DeleteAsync($"api/Postulacion/Delete/{id}");
+            //var pathUpdate = $"{env.WebRootPath}\\pdf\\";
+            //string RutaArchivoDeNombreUnico = Path.Combine(pathUpdate, archivoPostulacion);
+            //FileInfo informacionArchivo = new FileInfo(RutaArchivoDeNombreUnico);
+            //if (informacionArchivo.Exists)
+            //{
+            //    informacionArchivo.Delete();
+            //}
+
+        }
+        await PaginaSeleccionada(paginaActual);
+    }
+
+    async Task CargarPostulaciones(int pagina = 1, int cantidadRegistrosAmostrar = 9)
+    {
+        var httpResponse = await http.GetAsync($"{api}?pagina={pagina}&CantidadAMostrar={cantidadRegistrosAmostrar}");
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            paginasTotales = int.Parse(httpResponse.Headers.GetValues("totalPaginas").FirstOrDefault());
+
+            var responsesString = await httpResponse.Content.ReadAsStringAsync();
+            var responseEmp = await http.GetFromJsonAsync<IList<Empleo>>(api2);
+            var responseUser = await http.GetFromJsonAsync<IList<Usuario>>(api3);
+            empleos = responseEmp;
+            usuarios = responseUser;
+            postulaciones = JsonSerializer.Deserialize<IList<Postulacione>>(responsesString,
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        }
+        else
+        {
+            Console.WriteLine("error");
+        }
+
+        //usuarios = await http.GetFromJsonAsync<IList<Usuario>>(api);
+    }
+}

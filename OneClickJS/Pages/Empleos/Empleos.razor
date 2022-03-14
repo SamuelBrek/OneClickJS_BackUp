@@ -1,4 +1,4 @@
-﻿ @page "/empleos"
+﻿@page "/empleos"
 
 @using Microsoft.AspNetCore.Hosting
 @using Microsoft.AspNetCore.Mvc.Rendering
@@ -18,60 +18,60 @@
 @inject IWebHostEnvironment env
 
 <div class="container">
-<div class="title">
-    <div class = "title__content">
-        <h1>Empleos registrados</h1>
+    <div class="title">
+        <div class="title__content">
+            <h1>Empleos registrados</h1>
+        </div>
+        <div class="title_btn">
+            <a href="/empleos/add" class="btn btn-success">
+                <i class="oi oi-plus"></i>
+                &nbsp;
+                Agregar
+            </a>
+        </div>
     </div>
-    <div class = "title_btn">
-        <a href="/empleos/add" class="btn btn-success">
-            <i class="oi oi-plus"></i>
-            &nbsp;
-            Agregar
-        </a>
+
+    <p>Esta lista refleja los empleos registrados</p>
+
+    <div class="input-group mb-2 mr-sm-2">
+        <input type="text" class="form-control" @bind="nombreEmpleoFiltro" placeholder="Filtro por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
+        <button class="btn btn-primary" type="button" id="button-addon2" @onclick="Filtrar"><i class="oi oi-magnifying-glass"></i></button>
+        <button class="btn btn-danger" type="button" id="button-addon2" @onclick="Limpiar"><i class="oi oi-delete"></i></button>
     </div>
-</div>
-
-<p>Esta lista refleja los empleos registrados</p>
-
-<div class="input-group mb-2 mr-sm-2">
-      <input type="text" class="form-control" @bind="nombreEmpleoFiltro" placeholder="Filtro por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
-      <button class="btn btn-primary" type="button" id="button-addon2" @onclick="Filtrar"><i class="oi oi-magnifying-glass"></i></button>
-      <button class="btn btn-danger" type="button" id="button-addon2" @onclick="Limpiar"><i class="oi oi-delete"></i></button>
-</div>
 
 
-@if (empleos == null)
-{
-    <p><em>Cargando...</em></p>
-}
-else
-{
-    <br />
-    <div class="row row-cols-1 row-cols-md-3">
-        @foreach (var empleo in empleos)
+    @if (empleos == null)
+    {
+        <p><em>Cargando...</em></p>
+    }
+    else
+    {
+        <br />
+        <div class="row row-cols-1 row-cols-md-3">
+            @foreach (var empleo in empleos)
             {
                 <center>
                     <div class="col">
-                    <div class="card item" style="max-width: 21rem">
-                        <div class="card-header justify-content-center">
-                            <div class="col-auto justify-content-center">
-                            <span class="badge tipo">@empleo.ObtenerNameCat(categorias)</span> 
-                            
+                        <div class="card item" style="max-width: 21rem">
+                            <div class="card-header justify-content-center">
+                                <div class="col-auto justify-content-center">
+                                    <span class="badge tipo">@empleo.ObtenerNameCat(categorias)</span>
+
+                                </div>
                             </div>
-                        </div>
-                      <img src="img/empleos/@empleo.FotoEmpleo" class="card-img-top" alt="...">
-                          <div class="card-body">
+                            <img src="img/empleos/@empleo.FotoEmpleo" class="card-img-top" alt="...">
+                            <div class="card-body">
                                 <h5 class="card-title">@empleo.NombreEmpleo</h5>
                                 <p class="card-text">@empleo.DescripcionEmpleo</p>
                                 <div class="row justify-content-center">
                                     <div class="col">
-                                        <span class="badge vacantes span2">Vacantes</span> 
+                                        <span class="badge vacantes span2">Vacantes</span>
                                     </div>
                                     <div class="col">
-                                        <span class="badge sueldo span2">Sueldo</span> 
+                                        <span class="badge sueldo span2">Sueldo</span>
                                     </div>
                                     <div class="col">
-                                        <span class="badge tipo2 span2">Tipo</span> 
+                                        <span class="badge tipo2 span2">Tipo</span>
                                     </div>
                                 </div>
                                 <div class="row justify-content-center">
@@ -85,29 +85,29 @@ else
                                         @empleo.TipoEmpleo
                                     </div>
                                 </div>
-                                <br/>
+                                <br />
                                 <span class="icon">
                                     <a href="/empleos/@empleo.IdEmpleo" class="btn btn-info btnCurv" title="Detalle"><i class="oi oi-eye"></i></a>
                                 </span>
                                 <span class="icon">
                                     <a class="btn btn-danger btnCurv" title="Eliminar" @onclick="() => ConfirmDelete(empleo.IdEmpleo, empleo.NombreEmpleo, empleo.FotoEmpleo)"><i class="oi oi-trash"></i></a>
                                 </span>
-                               <!--<a href="#" class="btn btn-primary">Detalles</a>--> 
-                          </div>
-                           <div class="card-footer justify-content-center">
-                            <span class="badge span2" style="background-color:black">@empleo.ObtenerNameEmpr(empresas)</span> 
-                           </div>
+                                <!--<a href="#" class="btn btn-primary">Detalles</a>-->
                     </div>
-                </div>
+                            <div class="card-footer justify-content-center">
+                                <span class="badge span2" style="background-color:black">@empleo.ObtenerNameEmpr(empresas)</span>
+                            </div>
+                        </div>
+                    </div>
                 </center>
             }
         </div>
 
 
 
-}
-<br />
-<Paginacion PaginasTotales="paginasTotales" PaginaActual="paginaActual" PaginaSeleccionada="PaginaSeleccionada"></Paginacion>
+    }
+    <br />
+    <Paginacion PaginasTotales="paginasTotales" PaginaActual="paginaActual" PaginaSeleccionada="PaginaSeleccionada"></Paginacion>
 </div>
 @code {
 
@@ -127,7 +127,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await CargarEmpleos(); 
+        await CargarEmpleos();
 
     }
 
@@ -149,19 +149,19 @@ else
         await CargarEmpleos();
     }
 
-     protected async Task ConfirmDelete(int id, string nombreEmpleo, string fotoEmpleo)
+    protected async Task ConfirmDelete(int id, string nombreEmpleo, string fotoEmpleo)
     {
         string mensaje = $"¿Deseas borrar el empleo {nombreEmpleo}?";
         if (await JS.Confirm("Confirmar borrado", mensaje, TipoMensajeSweetAlert.question))
         {
             var response = await http.DeleteAsync($"api/Empleo/Delete/{id}");
             var pathUpdate = $"{env.WebRootPath}\\img\\empleos\\";
-                string RutaArchivoDeNombreUnico = Path.Combine(pathUpdate, fotoEmpleo);
-                FileInfo informacionArchivo = new FileInfo(RutaArchivoDeNombreUnico);
-                if (informacionArchivo.Exists)
-                {
-                    informacionArchivo.Delete();
-                }
+            string RutaArchivoDeNombreUnico = Path.Combine(pathUpdate, fotoEmpleo);
+            FileInfo informacionArchivo = new FileInfo(RutaArchivoDeNombreUnico);
+            if (informacionArchivo.Exists)
+            {
+                informacionArchivo.Delete();
+            }
         }
         await PaginaSeleccionada(paginaActual);
     }
@@ -178,7 +178,7 @@ else
             empresas = responseEmpresa;
             categorias = responseCat;
             empleos = JsonSerializer.Deserialize<IList<Empleo>>(responsesString,
-                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true});
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
         else
         {

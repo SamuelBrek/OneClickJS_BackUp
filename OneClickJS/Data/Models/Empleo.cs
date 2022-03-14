@@ -5,8 +5,14 @@ using System.Threading.Tasks;
 
 namespace OneClickJS.Data.Models
 {
-    public class Empleo
+    public partial class Empleo
     {
+        public Empleo()
+        {
+            IdCategoria = -1;
+            IdEmpresa = -1;
+            Postulaciones = new HashSet<Postulacione>();
+        }
         public int IdEmpleo { get; set; }
         public string NombreEmpleo { get; set; }
         public int VacantesEmpleo { get; set; }
@@ -21,12 +27,7 @@ namespace OneClickJS.Data.Models
 
         public virtual Categoria IdCategoriaNavigation { get; set; }
         public virtual Empresa IdEmpresaNavigation { get; set; }
-
-        public Empleo()
-        {
-            IdCategoria = -1;
-            IdEmpresa = -1;
-        }
+        public virtual ICollection<Postulacione> Postulaciones { get; set; }
 
         /*public IEnumerable<Categoria> ObtenerName(int id)
         {
