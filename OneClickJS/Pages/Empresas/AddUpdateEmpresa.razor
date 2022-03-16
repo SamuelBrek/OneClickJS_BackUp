@@ -55,9 +55,8 @@
             @if (isUpdate == false)
             {
                 <div class="mb-2">
-                    <label class="form-label" for="nivelEmpresa">Nivel</label>
-                    <InputText class="form-control" @bind-Value="@empresa.NivelEmpresa" id="nivelEmpresa" placeholder="Empresa">
-                    </InputText>
+                    <label for="disabledTextInput" class="form-label">Nivel</label>
+                    <input type="text" id="disabledTextInput" class="form-control" placeholder="Empresa" disabled>
                 </div>
                 <div class="mb-2">
                     <label class="form-label" for="correoEmpresa">Correo empresa</label>
@@ -100,11 +99,14 @@
         }
     }
 
-    private void OnInputFileChange(InputFileChangeEventArgs e)
+    private async void OnInputFileChange(InputFileChangeEventArgs e)
     {
         selectedFiles = e.GetMultipleFiles();
         Message = $"{selectedFiles.Count} archivo seleccionado";
-
+        if (isUpdate)
+        {
+            await JS.UploadedImage($"/img/empresas/{empresa.FotoEmpresa}");
+        }
         this.StateHasChanged();
 
     }
@@ -153,7 +155,7 @@
         }
         Message = $"{selectedFiles.Count} archivo subido al servidor";
         this.StateHasChanged();
-
+        empresa.NivelEmpresa = "Empresa";
         HttpResponseMessage response;
         if (isUpdate)
         {

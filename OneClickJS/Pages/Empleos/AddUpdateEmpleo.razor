@@ -27,7 +27,7 @@
         </div>
         <div class="mb-2">
             <label class="form-label" for="Prestaciones">Prestaciones</label>
-            <InputText class="form-control" @bind-Value="@empleo.PrestacionesEmpleo" id="Prestaciones"></InputText>
+            <InputTextArea class="form-control" @bind-Value="@empleo.PrestacionesEmpleo" id="Prestaciones"></InputTextArea>
         </div>
 
         <div class="mb-2">
@@ -40,16 +40,22 @@
         </div>
         <div class="mb-2">
             <label class="form-label" for="Descripcion">Descripción</label>
-            <InputText class="form-control" @bind-Value="@empleo.DescripcionEmpleo" id="Descripcion"></InputText>
+            <InputTextArea class="form-control" @bind-Value="@empleo.DescripcionEmpleo" id="Descripcion"></InputTextArea>
         </div>
         <div class="mb-2">
             <label class="form-label" for="tipo">Tipo de empleo</label>
-            <InputText class="form-control" @bind-Value="@empleo.TipoEmpleo" id="tipo"></InputText>
+            <InputSelect class="form-control" @bind-Value="@empleo.TipoEmpleo" id="tipo">
+                <option value="" >Selecciona un tipo de empleo...</option>
+                <option value="Temporal">Temporal</option>
+                <option value="Permanente">Permanente</option>
+            </InputSelect>
         </div>
-        <div class="mb-2">
-            <h3>@Message</h3>
-            <label class="form-label" for="fotoEmpleo">Foto de empleo</label>
+        <h3>@Message</h3>
+        <div class="input-group mb-3">
+            
+            
             <InputFile class="form-control" OnChange="OnInputFileChange" multiple @bind-Value="@empleo.FotoEmpleo" id="fotoEmpleo"></InputFile>
+            <label class="input-group-text" for="fotoEmpleo">Subir</label>
         </div>
         <div class="mb-2">
             <label class="form-label" for="categoriaId">Categoría a la que pertenece</label>
@@ -113,12 +119,16 @@
         loading = false;
     }
 
-    private void OnInputFileChange(InputFileChangeEventArgs e)
+    private async void OnInputFileChange(InputFileChangeEventArgs e)
     {
         selectedFiles = e.GetMultipleFiles();
         Message = $"{selectedFiles.Count} archivo seleccionado";
-
+        if (isUpdate)
+        {
+            await JS.UploadedImage($"/img/empleos/{empleo.FotoEmpleo}");
+        }
         this.StateHasChanged();
+        
     }
 
     protected async Task CancelarSubida()
@@ -139,6 +149,7 @@
 
         foreach(var file in selectedFiles)
         {
+            
             var route = empleo.FotoEmpleo;
             Stream stream = file.OpenReadStream();
             
@@ -157,6 +168,7 @@
                 empleo.FotoEmpleo = file.Name;
                 FileStream fs = File.Create(path);
                 await stream.CopyToAsync(fs);
+                
                 stream.Close();
                 fs.Close();
 

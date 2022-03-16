@@ -14,6 +14,10 @@ namespace OneClickJS.Helpers
         {
             return await js.InvokeAsync<string>("CustomSave", titulo, icono.ToString());
         }
+        public async static Task<string> UploadedImage(this IJSRuntime js, string uploadedImage)
+        {
+            return await js.InvokeAsync<string>("UploadedImage", uploadedImage);
+        }
 
         public static ValueTask<object> SetInLocalStorage(this IJSRuntime js, string key, string content)
    => js.InvokeAsync<object>(

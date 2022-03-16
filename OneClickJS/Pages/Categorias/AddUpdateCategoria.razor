@@ -12,23 +12,23 @@
 
 
 <div class="container">
-<h1>@(isUpdate ? $"Editar Categoria con Id: {categoria.IdCategoria}" : "Agregar categoria")</h1>
+    <h1>@(isUpdate ? $"Editar Categoria con Id: {categoria.IdCategoria}" : "Agregar categoria")</h1>
 
-<EditForm Model="@categoria">
-    <form class="container-border" @onsubmit="Save" >
+    <EditForm Model="@categoria">
+        <form class="container-border" @onsubmit="Save">
 
-        <div class="mb-2">
-            <label class="form-label" for="nameCategoria">Nombre de categoría</label>
-            <InputText class="form-control" @bind-Value="@categoria.NombreCategoria" id="nameCategoria"></InputText>
-        </div>
-        <button type="submit" class="btn btn-success">Guardar</button>
-        <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
-    </form>
-</EditForm>
+            <div class="mb-2">
+                <label class="form-label" for="nameCategoria">Nombre de categoría</label>
+                <InputText class="form-control" @bind-Value="@categoria.NombreCategoria" id="nameCategoria"></InputText>
+            </div>
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
+        </form>
+    </EditForm>
 </div>
 @code {
     [Parameter]
-    public int id{ get; set; }
+    public int id { get; set; }
     public bool isUpdate { get; set; } = false;
     Categoria categoria = new Categoria();
     //private Categoria categoria = new() { };
@@ -79,6 +79,6 @@
         }
         Categoria? saved = response.Content.ReadFromJsonAsync<Categoria>().Result;
         await Task.Delay(1500);
-            NavigationManager.NavigateTo("/categorias");
+        NavigationManager.NavigateTo("/categorias");
     }
 }

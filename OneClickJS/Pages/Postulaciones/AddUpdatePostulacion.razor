@@ -31,7 +31,7 @@
                 </div>
                 <div class="mb-2">
                     <label for="disabledTextInput" class="form-label">Empleo referente</label>
-                    <input type="text" id="disabledTextInput" class="form-control" placeholder="@id2" disabled>
+                    <input type="text" id="disabledTextInput" class="form-control" placeholder="@empleo.NombreEmpleo" disabled>
                 </div>
                 <div class="mb-2">
                     <label for="disabledTextInput2" class="form-label">Estado actual de postulación</label>
@@ -42,7 +42,11 @@
             {
                 <div class="mb-2">
                     <label class="form-label" for="estadoPostulacion">Estado de la postulación</label>
-                    <InputText class="form-control" @bind-Value="@postulacion.EstadoPostulacion" id="estadoPostulacion"></InputText>
+                    <InputSelect class="form-control" @bind-Value="@postulacion.EstadoPostulacion" id="estadoPostulacion">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Aceptado">Aceptado</option>
+                        <option value="Rechazado">Rechazado</option>
+                    </InputSelect>
                 </div>
             }
 
@@ -57,12 +61,16 @@
     public int id { get; set; }
     [Parameter]
     public int id2 { get; set; }
+
     public bool isUpdate { get; set; } = false;
     Postulacione postulacion = new Postulacione();
+    Empleo empleo = new Empleo();
     string Message = "Ningún archivo selecionado";
     IReadOnlyList<IBrowserFile> selectedFiles;
     protected override async Task OnInitializedAsync()
     {
+
+
         isUpdate = id != 0;
         if (isUpdate)
         {
@@ -71,6 +79,10 @@
             {
                 postulacion = response;
             }
+        }
+        else
+        {
+            empleo = await http.GetFromJsonAsync<Empleo>($"api/Empleo/{id2}");
         }
     }
     private void OnInputFileChange(InputFileChangeEventArgs e)
