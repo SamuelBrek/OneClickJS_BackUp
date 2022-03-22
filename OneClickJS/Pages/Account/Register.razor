@@ -1,69 +1,186 @@
 ﻿@page "/register"
 @using OneClickJS.Auth
 @inject HttpClient http
-@inject ILoginService loginService
 @inject NavigationManager NavigationManager
 @using OneClickJS.Data.Models
+@inject IJSRuntime JS;
 @using System.Net.Http.Json
+@using static OneClickJS.Helpers.IJSExtensions
 
 
-<h3 class="display-4">Creación de cuenta</h3>
+
+<center>
+    <a href="/login" class="regresar"><span class="oi oi-arrow-thick-left"></span> Regresar a inicio de sesión</a>
+    <h1>Creación de cuenta</h1>
+
+</center>
+
 <p class="mb-4 textStyle">Registrate e inicia sesión para una mejor experiencia</p>
-<EditForm Model="userInfo" OnValidSubmit="CrearUsuario">
+<EditForm Model="usuario" OnValidSubmit="Save">
     <DataAnnotationsValidator />
-    <div class="form-group mb-3">
-        <InputText placeholder="Nombre" @bind-Value="@userInfo.UserName" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4"></InputText>
-        <ValidationMessage For="@(() => userInfo.UserName)" />
+    <div class="input-group mb-3">
+        <span class="input-group-text spans" id="nom_user">Nombre</span>
+        <InputText placeholder="nombre" @bind-Value="@usuario.NombreUsuario" required="" autofocus="" class="form-control inputs" aria-describedby="nom_user1"></InputText>
+        <ValidationMessage For="@(() => usuario.NombreUsuario)" />
     </div>
-    <div class="form-group mb-3">
-        <InputText placeholder="Apellido" @bind-Value="@userInfo.UserLastName" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4"></InputText>
-        <ValidationMessage For="@(() => userInfo.UserLastName)" />
+    <div class="input-group mb-3">
+        <span class="input-group-text spans" id="Appellido">Apellido</span>
+        <InputText placeholder="apellido" @bind-Value="@usuario.ApellidoUsuario" required="" autofocus="" class="form-control inputs" aria-describedby="Apellido"></InputText>
+        <ValidationMessage For="@(() => usuario.ApellidoUsuario)" />
     </div>
-    <div class="form-group mb-3">
-        <InputText id="inputEmail" type="email" @bind-Value="@userInfo.Email" placeholder="Correo Electrónico" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4"></InputText>
-        <ValidationMessage For="@(() => userInfo.Email)" />
+    <div class="input-group mb-3">
+        <span class="input-group-text spans" id="correoMail">Correo</span>
+        <InputText id="inputEmail" type="email" @bind-Value="@usuario.CorreoUsuario" placeholder="ejemplo@gmail.com" required="" autofocus="" class="form-control inputs" aria-describedby="correoMal"></InputText>
+        <ValidationMessage For="@(() => usuario.CorreoUsuario)" />
     </div>
-    <div class="form-group mb-3">
-        <InputText id="inputPassword" type="password" @bind-Value="@userInfo.Password" placeholder="Contraseña" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary"></InputText>
-        <ValidationMessage For="@(() => userInfo.Password)" />
+    <div class="input-group mb-3">
+        <span class="input-group-text spans" id="contrasenia">Contraseña</span>
+        <InputText id="inputPassword" type="password" @bind-Value="@usuario.ContraseñaUsuario" placeholder="contraseña" required="" aria-describedby="contrasenia" class="form-control text-primary inputs"></InputText>
+        <ValidationMessage For="@(() => usuario.ContraseñaUsuario)" />
     </div>
+    <center>
+        <button type="submit" class="btn btn-info btn-block text-uppercase mb-2 rounded-pill shadow-sm">Registrarse</button>
 
-    <button type="submit" class="btn btn-info btn-block text-uppercase mb-2 rounded-pill shadow-sm">Registrarse</button>
+    </center>
 
 </EditForm>
 <br />
 
 
 <style>
+    body {
+        background-color: #1fd1f9;
+        background-image: linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%);
+    }
+
+    .inputs {
+        border-top-right-radius: 80px;
+        border-bottom-right-radius: 80px;
+        background-color: #6a93cb;
+        background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%);
+    }
+
+    .spans {
+        border-top-left-radius: 80px;
+        border-bottom-left-radius: 80px;
+        border: none;
+        width: 28%;
+        background-color: #6e72fc;
+        background-image: linear-gradient(315deg, #6e72fc 0%, #ad1deb 74%);
+        color: white;
+    }
+
+    .regresar {
+        color: lightblue;
+    }
+
     .login,
     .image {
-        min-height: 100vh;
+        min-height: 85vh;
     }
 
     .bg-image {
-        background-image: url('https://therichpost.com/wp-content/uploads/2021/02/login-split.jpg');
+        background-image: url(/img/login.jpg);
         background-size: cover;
         background-position: center center;
     }
 
     .sideInfo {
-        background-color: #fce055;
-        background-image: linear-gradient(319deg, #fce055 0%, #256eff 37%, #46237a 100%);
+        background-color: #4c4177;
+        background-image: linear-gradient(315deg, #4c4177 0%, #2a5470 74%);
     }
 
     .textStyle {
         color: white;
     }
+
+    section {
+        margin: 1%;
+    }
+
+    h1 {
+        color: white;
+        font-family: 'Agency FB';
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .vacantes {
+        background-color: darkred;
+        font-size: 10px;
+    }
+
+    .sueldo {
+        background-color: darkgreen;
+    }
+
+    .tipo {
+        background-color: transparent;
+    }
+
+    .tipo2 {
+        background-color: darkblue;
+    }
+
+
+    .span2 {
+        border-radius: 110px;
+    }
+
+    .item {
+        background-clip: border-box;
+        border-radius: 35px 0;
+        overflow: hidden;
+        box-shadow: 0 0 5px 0 rgba(0,0,0,.095);
+        transition: all 300ms;
+        position: relative;
+    }
+
+
+
+        .item:hover:after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .item:hover {
+            transform: scale(1.01);
+        }
+
+    .item-text {
+        padding: 1em;
+    }
+
+    .item-img {
+        max-width: 100%;
+        display: block;
+    }
 </style>
 
 @code {
-    private UserInfo userInfo = new UserInfo();
+    Usuario usuario = new Usuario();
     //private UserToken userToken = new UserToken();
-
-    private async Task CrearUsuario()
+    protected async Task ConfirmarSubida()
     {
-        //var result = await http.PostAsJsonAsync<UserToken>("api/Cuentas/Crear", userInfo!);
-        //await loginService.Login(result.Token);
-        //NavigationManager.NavigateTo("");
+        await JS.SaveData("Procedimiento exitoso!", TipoMensajeSweetAlert.success);
+    }
+
+    protected async Task Save()
+    {
+
+        HttpResponseMessage response;
+
+        usuario.NivelUsuario = "Usuario";
+        response = await http.PostAsJsonAsync<Usuario>("api/Usuario/Create", usuario);
+        if (response.IsSuccessStatusCode)
+        {
+            await ConfirmarSubida();
+        }
+
+        Usuario saved = response.Content.ReadFromJsonAsync<Usuario>().Result;
+        await Task.Delay(1500);
+        NavigationManager.NavigateTo("/login");
     }
 }

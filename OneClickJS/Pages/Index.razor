@@ -110,12 +110,181 @@
 
         </div>
     }
+
+
     <br />
     <center>
-        <a class="btn btn-primary btnCurv" title="Ver más" href="/login">Ver más <i class="oi oi-arrow-right"></i></a>
+        <a class="btn btn-primary btnCurv" title="Ver más" href="/empleos">Ver más <i class="oi oi-arrow-right"></i></a>
     </center>
+    <br />
+
 
 </div>
+
+
+
+
+<div class="w-100 bg-parallax-2">
+    <div id="bg-parallax-2">
+        <div class="container py-lg-5">
+            <div class="row firsttext text-center">
+                <div class="col-12 col-sm-12 col-md-12 co-lg-12 mt-5">
+                    <p class="fz-36 pb-4" style="font-size: 40px; font-family: 'Agency FB';">Encuentra tu empleo/aspirante</p>
+                    <p class="fz-21 fw-200 lh-3">
+                        <i>Inicia sesión para empezar tu experiencia en OneClickJS</i>
+                        <br>
+                        En esta página podrás
+                    </p>
+                </div>
+            </div>
+            <div class="row firsttext text-center">
+                <div class="col-6 col-sm-6 col-md-3 col-lg-3 mt-4">
+                    <i class="oi oi-eye w-25 d-block mx-auto sized itemIndex"></i>
+
+                    <p class="fw-200 fz-18 mt-3">Ser visible para<br>las empresas registradas</p>
+                </div>
+                <div class="col-6 col-sm-6 col-md-3 col-lg-3 mt-4">
+                    <span class="oi oi-spreadsheet w-25 d-block mx-auto sized itemIndex"></span>
+
+                    <p class="fw-200 fz-18 mt-3">Visualizar empleos<br>por categorías y empresas</p>
+                </div>
+                <div class="col-6 col-sm-6 col-md-3 col-lg-3 mt-4">
+                    <span class="oi oi-loop-circular w-25 d-block mx-auto sized itemIndex"></span>
+
+                    <p class="fw-200 fz-18 mt-3">Postularte a<br>los empleos que desees</p>
+                </div>
+                <div class="col-6 col-sm-6 col-md-3 col-lg-3 mt-4 mb-5">
+                    <span class="oi oi-magnifying-glass w-25 d-block mx-auto sized itemIndex"></span>
+
+                    <p class="fw-200 fz-18 mt-3">Ver el seguimiento <br>de tus postulaciones</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+    <br />
+    <center><h2>Empresas registradas</h2></center>
+    <br />
+
+
+
+
+
+
+    @if (empresas2 == null)
+    {
+        <p><em>Cargando...</em></p>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3">
+            @foreach (var empresa in empresas2)
+            {
+
+                <center>
+                    <div class="col">
+                        <div class="card item" style="max-width: 21rem">
+                            <div class="card-header justify-content-center">
+                                <div class="col-auto justify-content-center">
+                                    <span class="badge tipo">@empresa.NombreEmpresa</span>
+
+                                </div>
+                            </div>
+                            <img src="img/empresas/@empresa.FotoEmpresa" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Dirección</h5>
+                                <p class="card-text">@empresa.Direccion()</p>
+                                <div class="row justify-content-center">
+
+                                    <div class="col">
+                                        <span class="badge sueldo span2">Teléfono</span>
+                                    </div>
+                                    <div class="col">
+                                        <span class="badge tipo2 span2">Municipio</span>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center">
+
+                                    <div class="col">
+                                        @empresa.TelefonoEmpresa
+                                    </div>
+                                    <div class="col">
+                                        @empresa.MunicipioEmpresa
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer justify-content-center">
+                                <span class="badge span2" style="background-color:black">@empresa.CorreoEmpresa</span>
+                            </div>
+                        </div>
+                    </div>
+                </center>
+
+            }
+
+        </div>
+    }
+
+
+
+    <br />
+    <center>
+        <a class="btn btn-primary btnCurv" title="Ver más" href="/empresas">Ver más <i class="oi oi-arrow-right"></i></a>
+    </center>
+    <br />
+
+
+
+
+
+</div>
+
+<style>
+    .bg-parallax-2 {
+        background-image: url(/img/index2.jpeg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
+        opacity: 95%
+    }
+
+    .firsttext {
+        color: black;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .sized {
+        font-size: 40px;
+    }
+
+    .itemIndex {
+        transition: all 300ms !important;
+    }
+
+        .itemIndex:hover {
+            transform: scale(1) !important;
+        }
+
+            .itemIndex:hover::after {
+                transform: scale(1.05) !important;
+            }
+
+</style>
+
 
 
 
@@ -129,6 +298,8 @@
 
     private readonly string api3 = "api/Empresa/";
     private IList<Empresa> empresas;
+    private readonly string api4 = "api/Empresa/GetEmpresas2";
+    private IList<Empresa> empresas2;
 
     private string nombreEmpleoFiltro = string.Empty;
     private int paginaActual = 1;
@@ -142,20 +313,24 @@
     }
 
 
-    async Task CargarEmpleos(int pagina = 1, int cantidadRegistrosAmostrar = 6)
+    async Task CargarEmpleos(int pagina = 1, int cantidadRegistrosAmostrar = 3)
     {
         var httpResponse = await http.GetAsync($"{api}?pagina={pagina}&CantidadAMostrar={cantidadRegistrosAmostrar}&nombre={nombreEmpleoFiltro}");
+        var httpResponsEmpresa = await http.GetAsync($"{api4}?pagina={pagina}&CantidadAMostrar={cantidadRegistrosAmostrar}&nombre={nombreEmpleoFiltro}");
 
         if (httpResponse.IsSuccessStatusCode)
         {
             paginasTotales = int.Parse(httpResponse.Headers.GetValues("totalPaginas").FirstOrDefault());
             var responsesString = await httpResponse.Content.ReadAsStringAsync();
+            var responsesString2 = await httpResponsEmpresa.Content.ReadAsStringAsync();
             var responseCat = await http.GetFromJsonAsync<IList<Categoria>>(api2);
             var responseEmpresa = await http.GetFromJsonAsync<IList<Empresa>>(api3);
             empresas = responseEmpresa;
             categorias = responseCat;
             empleos = JsonSerializer.Deserialize<IList<Empleo>>(responsesString,
                 new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+            empresas2 = JsonSerializer.Deserialize<IList<Empresa>>(responsesString2,
+            new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
         else
         {

@@ -17,31 +17,68 @@
 
     <EditForm Model="@usuario">
         <form class="container-border" @onsubmit="Save">
-            <div class="mb-2">
-                <label class="form-label" for="name">Nombre</label>
-                <InputText class="form-control" @bind-Value="@usuario.NombreUsuario" id="name"></InputText>
+            <DataAnnotationsValidator />
+
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text spans" for="name">Nombre</span>
+                        <InputText class="form-control inputs" required="" @bind-Value="@usuario.NombreUsuario" id="name"></InputText>
+
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+
+                        <span class="input-group-text spans" for="last-name">Apellido</span>
+                        <InputText class="form-control inputs" required="" @bind-Value="@usuario.ApellidoUsuario" id="last-name"></InputText>
+
+
+                    </div>
+                </div>
             </div>
-            <div class="mb-2">
-                <label class="form-label" for="last-name">Apellido</label>
-                <InputText class="form-control" @bind-Value="@usuario.ApellidoUsuario" id="last-name"></InputText>
-            </div>
+
+
+
+
+
+
+
             @if (isUpdate == false)
             {
-                <div class="mb-2">
-                    <label class="form-label" for="correo">Correo</label>
-                    <InputText class="form-control" @bind-Value="@usuario.CorreoUsuario" id="correo"></InputText>
+
+
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text spans" for="correo">Correo</span>
+                            <InputText class="form-control inputs" required="" @bind-Value="@usuario.CorreoUsuario" id="correo"></InputText>
+
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+
+
+                            <span class="input-group-text spans" for="password">Contraseña</span>
+                            <InputText class="form-control inputs" required="" @bind-Value="@usuario.ContraseñaUsuario" id="password"></InputText>
+
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-2">
-                    <label class="form-label" for="password">Contraseña</label>
-                    <InputText class="form-control" @bind-Value="@usuario.ContraseñaUsuario" id="password"></InputText>
-                </div>
+
+
+
+
             }
             @if (isUpdate)
             {
-                <div class="mb-2">
-                    <label class="form-label" for="nivel">Nivel</label>
-                    <InputText class="form-control" @bind-Value="@usuario.NivelUsuario" id="nivel" placeholder="Usuario">
-                    </InputText>
+                <div class="input-group mb-3">
+                    <spans class="input-group-text spans" for="nivel">Nivel</spans>
+                    <InputSelect class="form-control inputs" required="" @bind-Value="@usuario.NivelUsuario" id="nivel" placeholder="Usuario">
+                        <option value="Usuario">Usuario</option>
+                        <option value="Administrador">Administrador</option>
+                    </InputSelect>
                 </div>
             }
 
@@ -51,15 +88,45 @@
     </EditForm>
 </div>
 
+<style>
+    .inputs {
+        border-top-right-radius: 80px;
+        border-bottom-right-radius: 80px;
+    }
 
+    .spans {
+        border-top-left-radius: 80px;
+        border-bottom-left-radius: 80px;
+        border: none;
+        width: 23%;
+        background-color: #29539b;
+        background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        color: white;
+    }
+</style>
 
 @code {
     [Parameter]
     public int id { get; set; }
     public bool isUpdate { get; set; } = false;
     Usuario usuario = new Usuario();
+    private Acceso session = new Acceso();
     protected override async Task OnInitializedAsync()
     {
+        session = IsDataNull.CreateInstanceIfIsNull<Acceso>(await LocalStorage.GetValue<Acceso>(ValuesKeys.Persona));
+        if (session.rol == null)
+        {
+            NavigationManager.NavigateTo("/login");
+            await JS.InvokeVoidAsync("NotAllowed");
+        }
+        else
+        {
+            if (session.rol == "Usuario" || session.rol == "Empresa")
+            {
+                NavigationManager.NavigateTo("/");
+                await JS.InvokeVoidAsync("NotAllowed");
+            }
+        }
         isUpdate = id != 0;
         if (isUpdate)
         {

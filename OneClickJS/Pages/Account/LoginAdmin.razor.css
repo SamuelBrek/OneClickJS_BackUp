@@ -1,4 +1,7 @@
-﻿body {
-    background-color: #09c7fb !important;
-    background-image: linear-gradient(315deg, #09c7fb 0%, #93fb9d 74%) !important;
+﻿
+.cardBox{
+    margin-top: 5%;
+    margin-bottom: 5%;
+    height: 100%;
+    width: 90%;
 }

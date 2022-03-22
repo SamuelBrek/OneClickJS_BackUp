@@ -1,6 +1,5 @@
 .page {
-    background-color: #09c7fb !important;
-    background-image: linear-gradient(315deg, #09c7fb 0%, #93fb9d 74%) !important;
+    /*background-color: #6a93cb;
+    background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%);*/
+    background-image: radial-gradient(circle at 17% 17%, #95d1ea 0, #99d0ec 8.33%, #9dcfef 16.67%, #a2cef0 25%, #a8ccf2 33.33%, #afcbf2 41.67%, #b5c9f2 50%, #bcc7f1 58.33%, #c2c6f0 66.67%, #c9c4ee 75%, #cfc2ec 83.33%, #d5c1e9 91.67%, #dbbfe5 100%);
 }
-
-    

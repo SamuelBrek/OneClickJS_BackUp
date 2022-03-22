@@ -1,16 +1,18 @@
-#carouselExampleCaptions{
+#carouselExampleCaptions {
     bottom: 17px !important;
 }
+
 carousel-inner {
     position: relative;
     display: inline-block;
     text-align: center;
-    
 }
+
 .imgcustom {
     -webkit-filter: brightness(65%);
     filter: brightness(65%);
 }
+
 .centrado {
     position: absolute !important;
     font-size: 200%;
@@ -19,9 +21,10 @@ carousel-inner {
     color: white;
     transform: translate(-50%, -50%) !important;
 }
+
 .slogans {
-   font-size: 200% !important;
-   font-family:'Tw Cen MT' !important;
+    font-size: 200% !important;
+    font-family: 'Tw Cen MT' !important;
 }
 
 .my-card {
@@ -151,6 +154,7 @@ carousel-inner {
 .tipo {
     background-color: transparent;
 }
+
 .tipo2 {
     background-color: darkblue;
 }
@@ -177,3 +181,7 @@ carousel-inner {
     font-size: 130%;
     text-shadow: 1em;
 }
+
+
+
+

@@ -4,6 +4,7 @@
 @using OneClickJS.Data
 @using System.Net.Http
 @using System.Net.Http.Json
+@using OneClickJS.Helpers
 @inject HttpClient http
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
@@ -16,24 +17,79 @@
 
     <EditForm Model="@categoria">
         <form class="container-border" @onsubmit="Save">
+            <DataAnnotationsValidator />
 
-            <div class="mb-2">
-                <label class="form-label" for="nameCategoria">Nombre de categoría</label>
-                <InputText class="form-control" @bind-Value="@categoria.NombreCategoria" id="nameCategoria"></InputText>
+            <div class="input-group mb-3">
+                <span class="input-group-text spandescrip" for="nameCategoria">Nombre de categoría</span>
+                <InputText class="form-control inputs" required="" @bind-Value="@categoria.NombreCategoria" id="nameCategoria"></InputText>
             </div>
             <button type="submit" class="btn btn-success">Guardar</button>
             <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
         </form>
     </EditForm>
 </div>
+
+<style>
+    .inputs {
+        border-top-right-radius: 95px !important;
+        border-bottom-right-radius: 95px !important;
+        /*    background-color: #6a93cb !important;
+                                            background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%) !important;*/
+    }
+
+    .spanFoto {
+        border-top-right-radius: 80px;
+        border-bottom-right-radius: 80px;
+        border: none;
+        background-color: #29539b;
+        background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        color: white;
+    }
+
+    .spandescrip {
+        border-top-left-radius: 80px !important;
+        border-bottom-left-radius: 80px !important;
+        border: none !important;
+        width: 18% !important;
+        background-color: #29539b;
+        background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        color: white !important;
+    }
+
+    .spans {
+        border-top-left-radius: 80px !important;
+        border-bottom-left-radius: 80px !important;
+        border: none !important;
+        width: 35% !important;
+        background-color: #29539b;
+        background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        color: white !important;
+    }
+</style>
+
 @code {
     [Parameter]
     public int id { get; set; }
+    private Acceso session = new Acceso();
     public bool isUpdate { get; set; } = false;
     Categoria categoria = new Categoria();
     //private Categoria categoria = new() { };
     protected override async Task OnInitializedAsync()
     {
+        session = IsDataNull.CreateInstanceIfIsNull<Acceso>(await LocalStorage.GetValue<Acceso>(ValuesKeys.Persona));
+        if(session.rol == null || session.rol == "Usuario" || session.rol == "Empresa")
+        {
+            NavigationManager.NavigateTo("/login");
+            await JS.InvokeVoidAsync("NotAllowed");
+        }
+        else
+        {
+            if (session.rol == "Usuario" || session.rol == "Empresa")
+            {
+                NavigationManager.NavigateTo("/");
+                await JS.InvokeVoidAsync("NotAllowed");
+            }
+        }
         isUpdate = id != 0;
         if (isUpdate)
         {

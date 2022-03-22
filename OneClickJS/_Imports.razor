@@ -7,4 +7,9 @@
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
 @using OneClickJS
+@using OneClickJS.Auth
 @using OneClickJS.Shared
+@inject ILocalStorage LocalStorage
+@inject NavigationManager NavigationManager
+@using OneClickJS.Helpers;
+@inject IJSRuntime JS

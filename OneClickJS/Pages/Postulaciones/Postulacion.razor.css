@@ -1,2 +1,22 @@
 ﻿body {
 }
+.trtableheader {
+    background-color: #29539b;
+    background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+    color: white
+}
+
+.item {
+    transition: all 300ms;
+
+}
+
+
+    .item:hover:after {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .item:hover {
+        transform: scale(1.02);
+    }

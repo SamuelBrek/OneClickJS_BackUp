@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using OneClickJS.Data.Models;
 
 namespace OneClickJS
 {
@@ -35,11 +36,14 @@ namespace OneClickJS
             services.AddSingleton<WeatherForecastService>();
             services.AddBlazoredSessionStorage();
             services.AddAuthorizationCore();
-            services.AddScoped<JWTAuthenticationProvider>();
-            services.AddScoped<AuthenticationStateProvider, JWTAuthenticationProvider>(provider => provider.GetRequiredService<JWTAuthenticationProvider>());
-            services.AddScoped<ILoginService, JWTAuthenticationProvider>(provider => provider.GetRequiredService<JWTAuthenticationProvider>());
-            
-            
+            //services.AddScoped<Acceso>();
+            services.AddTransient<ILocalStorage, LocalStorage>();
+            //services.AddSingleton<Acceso>();
+            //services.AddScoped<JWTAuthenticationProvider>();
+            //services.AddScoped<AuthenticationStateProvider, JWTAuthenticationProvider>(provider => provider.GetRequiredService<JWTAuthenticationProvider>());
+            //services.AddScoped<ILoginService, JWTAuthenticationProvider>(provider => provider.GetRequiredService<JWTAuthenticationProvider>());
+
+
             //services.AddSingleton<HttpClient>();
             var clientHandler = new HttpClientHandler();
             clientHandler.ServerCertificateCustomValidationCallback =

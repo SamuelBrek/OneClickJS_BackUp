@@ -13,88 +13,188 @@
 @inject IWebHostEnvironment env;
 
 <div class="container">
-<h1>@(isUpdate ? $"Editar empleo con Id: {empleo.IdEmpleo}" : "Agregar empleo")</h1>
+    <h1>@(isUpdate ? $"Editar empleo con Id: {empleo.IdEmpleo}" : "Agregar empleo")</h1>
 
-<EditForm Model="@empleo">
-    <form class="container-border" @onsubmit="Save">
-        <div class="mb-2">
-            <label class="form-label" for="NombreEmpleo">Nombre de empleo</label>
-            <InputText class="form-control" @bind-Value="@empleo.NombreEmpleo" id="NombreEmpleo"></InputText>
-        </div>
-        <div class="mb-2">
-            <label class="form-label" for="Vacantes">Vacantes</label>
-            <InputNumber class="form-control" @bind-Value="@empleo.VacantesEmpleo" id="Vacantes"></InputNumber>
-        </div>
-        <div class="mb-2">
-            <label class="form-label" for="Prestaciones">Prestaciones</label>
-            <InputTextArea class="form-control" @bind-Value="@empleo.PrestacionesEmpleo" id="Prestaciones"></InputTextArea>
-        </div>
+    <EditForm Model="@empleo">
+        <form class="container-border" @onsubmit="Save">
+            <DataAnnotationsValidator />
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text spans" id="inputGroup-sizing-default">Nombre</span>
+                        <InputText class="form-control inputs" required="" @bind-Value="@empleo.NombreEmpleo" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+                        
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text spans">Sueldo $</span>
 
-        <div class="mb-2">
-            <label class="form-label" for="Sueldo">Sueldo</label>
-            <InputNumber class="form-control" @bind-Value="@empleo.SueldoEmpleo" id="Sueldo"></InputNumber>
-        </div>
-        <div class="mb-2">
-            <label class="form-label" for="Municipio">Municipio</label>
-            <InputText class="form-control" @bind-Value="@empleo.MunicipioEmpleo" id="Municipio"></InputText>
-        </div>
-        <div class="mb-2">
-            <label class="form-label" for="Descripcion">Descripción</label>
-            <InputTextArea class="form-control" @bind-Value="@empleo.DescripcionEmpleo" id="Descripcion"></InputTextArea>
-        </div>
-        <div class="mb-2">
-            <label class="form-label" for="tipo">Tipo de empleo</label>
-            <InputSelect class="form-control" @bind-Value="@empleo.TipoEmpleo" id="tipo">
-                <option value="" >Selecciona un tipo de empleo...</option>
-                <option value="Temporal">Temporal</option>
-                <option value="Permanente">Permanente</option>
-            </InputSelect>
-        </div>
-        <h3>@Message</h3>
-        <div class="input-group mb-3">
-            
-            
-            <InputFile class="form-control" OnChange="OnInputFileChange" multiple @bind-Value="@empleo.FotoEmpleo" id="fotoEmpleo"></InputFile>
-            <label class="input-group-text" for="fotoEmpleo">Subir</label>
-        </div>
-        <div class="mb-2">
-            <label class="form-label" for="categoriaId">Categoría a la que pertenece</label>
-            <InputSelect class="form-control" @bind-Value="@empleo.IdCategoria" id="categoriaId">
-                <option value="-1" disabled>Selecciona una categoría...</option>
-                @if (loading)
-                {
-                    <option value="0" disabled>Cargando...</option>
-                }else if(categorias != null){
-                    @foreach(var categoria in categorias)
+                        <InputNumber class="form-control inputs" required="" @bind-Value="@empleo.SueldoEmpleo" aria-label="Dollar amount (with dot and two decimal places)" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3" style="height:87%">
+                        <span class="input-group-text spans">Prestaciones</span>
+                        <InputTextArea class="form-control inputs" required="" @bind-Value="@empleo.PrestacionesEmpleo" aria-label="With textarea"></InputTextArea>
+                    </div>
+                </div>
+                <div class="col">
+
+                    <div class="row">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text spans" id="inputGroup-sizing-default 2"><span class="oi oi-person"> </span> Vacantes</span>
+                            <InputNumber class="form-control inputs" required="" @bind-Value="@empleo.VacantesEmpleo" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default 2" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text spans" id="inputGroup-sizing-default 3"><span class="oi oi-map-marker"> </span> Municipio</span>
+                            <InputText class="form-control inputs" required="" @bind-Value="@empleo.MunicipioEmpleo" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default 3" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text spandescrip" id="inputGroup-sizing-default 4">Descripción</span>
+                <InputTextArea class="form-control inputs" required="" @bind-Value="@empleo.DescripcionEmpleo" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default 4" />
+
+            </div>
+
+
+
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text spans" for="inputGroupSelect01">Tipo</span>
+                        <InputSelect class="form-select inputs" required="" @bind-Value="@empleo.TipoEmpleo" id="inputGroupSelect01">
+                            <option value="">Selecciona un tipo de empleo...</option>
+                            <option value="Temporal">Temporal</option>
+                            <option value="Permanente">Permanente</option>
+                        </InputSelect>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text spans" for="inputGroupSelect02">Categoría</span>
+                        <InputSelect class="form-select inputs" required="" @bind-Value="@empleo.IdCategoria" id="inputGroupSelect02">
+                            <option value="-1" disabled>Selecciona una categoría...</option>
+                            @if (loading)
+                            {
+                                <option value="0" disabled>Cargando...</option>
+                            }
+                            else if (categorias != null)
+                            {
+                                @foreach (var categoria in categorias)
+                                {
+                                    <option value="@categoria.IdCategoria">@categoria.NombreCategoria</option>
+                                }
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <h3>@Message</h3>
+
+
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <InputFile class="form-control" required="" OnChange="OnInputFileChange" multiple @bind-Value="@empleo.FotoEmpleo" id="fotoEmpleo"></InputFile>
+                        <label class="input-group-text spanFoto" for="fotoEmpleo">Subir</label>
+                    </div>
+                </div>
+                <div class="col">
+                    @if (session.rol == "Administrador")
                     {
-                        <option value="@categoria.IdCategoria">@categoria.NombreCategoria</option>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text spans" required="" for="inputGroupSelect03">Empresa</span>
+                            <InputSelect class="form-select inputs" @bind-Value="@empleo.IdEmpresa" id="inputGroupSelect03">
+                                <option value="-1" disabled>Selecciona una empresa...</option>
+                                @if (loading)
+                                {
+                                <option value="0" disabled>Cargando...</option>
+                                }
+                                else if (empresas != null)
+                                {
+                                @foreach (var empresa in empresas)
+                                    {
+                                    <option value="@empresa.IdEmpresa">@empresa.NombreEmpresa</option>
+                                    }
+                                }
+                        </InputSelect>
+                    </div>
                     }
-                }
-            </InputSelect>
-        </div>
-         <div class="mb-2">
-            <label class="form-label" for="empresaId">Empresa a la que pertenece</label>
-            <InputSelect class="form-control" @bind-Value="@empleo.IdEmpresa" id="empresaId">
-                <option value="-1" disabled>Selecciona una empresa...</option>
-                @if (loading)
-                {
-                    <option value="0" disabled>Cargando...</option>
-                }else if(empresas != null){
-                    @foreach(var empresa in empresas)
+                    else
                     {
-                        <option value="@empresa.IdEmpresa">@empresa.NombreEmpresa</option>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text spans"  for="inputGroupSelect03">Empresa</span>
+                            <select class="form-select inputs" disabled="" id="inputGroupSelect03">
+                                <option value="-1">@session.emailAddress</option>
+                            </select>
+                        </div>
                     }
-                }
-            </InputSelect>
-        </div>
-        <button type="submit" class="btn btn-success">Guardar</button>
-        <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
-    </form>
-</EditForm>
+
+                </div>
+            </div>
+
+
+
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
+        </form>
+    </EditForm>
 </div>
-@code{
+<style>
+    .inputs {
+        border-top-right-radius: 95px !important;
+        border-bottom-right-radius: 95px !important;
+        /*    background-color: #6a93cb !important;
+            background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%) !important;*/
+    }
+
+    .spanFoto {
+        border-top-right-radius: 80px;
+        border-bottom-right-radius: 80px;
+        border: none;
+background-color: #29539b;
+background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        color: white;
+    }
+
+    .spandescrip {
+        border-top-left-radius: 80px !important;
+        border-bottom-left-radius: 80px !important;
+        border: none !important;
+        width: 13.5% !important;
+background-color: #29539b;
+background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        color: white !important;
+    }
+
+    .spans {
+        border-top-left-radius: 80px !important;
+        border-bottom-left-radius: 80px !important;
+        border: none !important;
+        width: 28% !important;
+background-color: #29539b;
+background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        color: white !important;
+    }
+</style>
+@code {
     [Parameter]
-    public int id{ get; set; }
+    public int id { get; set; }
+    private Acceso session = new Acceso();
     public bool isUpdate { get; set; } = false;
     Empleo empleo = new Empleo();
     bool loading = true;
@@ -105,6 +205,20 @@
 
     protected override async Task OnInitializedAsync()
     {
+        session = IsDataNull.CreateInstanceIfIsNull<Acceso>(await LocalStorage.GetValue<Acceso>(ValuesKeys.Persona));
+        if (session.rol == null)
+        {
+            NavigationManager.NavigateTo("/login");
+            await JS.InvokeVoidAsync("NotAllowed");
+        }
+        else
+        {
+            if (session.rol == "Usuario")
+            {
+                NavigationManager.NavigateTo("/");
+                await JS.InvokeVoidAsync("NotAllowed");
+            }
+        }
         categorias = await http.GetFromJsonAsync<IList<Categoria>>("api/Categoria");
         empresas = await http.GetFromJsonAsync<IList<Empresa>>("api/Empresa");
         isUpdate = id != 0;
@@ -128,7 +242,7 @@
             await JS.UploadedImage($"/img/empleos/{empleo.FotoEmpleo}");
         }
         this.StateHasChanged();
-        
+
     }
 
     protected async Task CancelarSubida()
@@ -147,14 +261,14 @@
     protected async Task Save()
     {
 
-        foreach(var file in selectedFiles)
+        foreach (var file in selectedFiles)
         {
-            
+
             var route = empleo.FotoEmpleo;
             Stream stream = file.OpenReadStream();
-            
+
             var path = $"{env.WebRootPath}\\img\\empleos\\{file.Name}";
-            
+
             if (isUpdate)
             {
                 var pathUpdate = $"{env.WebRootPath}\\img\\empleos\\";
@@ -165,18 +279,21 @@
                     informacionArchivo.Delete();
                 }
             }
-                empleo.FotoEmpleo = file.Name;
-                FileStream fs = File.Create(path);
-                await stream.CopyToAsync(fs);
-                
-                stream.Close();
-                fs.Close();
+            empleo.FotoEmpleo = file.Name;
+            FileStream fs = File.Create(path);
+            await stream.CopyToAsync(fs);
+
+            stream.Close();
+            fs.Close();
 
         }
-            Message = $"{selectedFiles.Count} archivo subido al servidor";
-            this.StateHasChanged();
+        Message = $"{selectedFiles.Count} archivo subido al servidor";
+        this.StateHasChanged();
 
-
+        if (session.rol == "Empresa")
+        {
+            empleo.IdEmpresa = session.id;
+        }
         HttpResponseMessage response;
         if (isUpdate)
         {
@@ -196,7 +313,7 @@
         }
         Empleo saved = response.Content.ReadFromJsonAsync<Empleo>().Result;
         await Task.Delay(1500);
-            NavigationManager.NavigateTo("/empleos");
+        NavigationManager.NavigateTo("/empleos");
     }
 }
 

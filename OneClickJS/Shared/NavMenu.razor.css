@@ -1,4 +1,47 @@
 nav {
-    background-color: #48C9B0 !important;
-
+    background-color: #110C73 !important;
 }
+
+.dropdown-menu {
+    background-color: #110C73 !important;
+    width: 100%;
+    color: white;
+}
+
+
+.dropdown-item {
+    color: white;
+    cursor: pointer;
+    transition: all 300ms;
+}
+
+    .dropdown-item:hover {
+        background: darkblue;
+        transform: scale(1.03);
+    }
+        .dropdown-item:hover::after {
+            transform: scale(1);
+        }
+
+        
+
+.nav-item2 {
+    transition: all 300ms;
+}
+
+    .nav-item2:hover {
+        transform: scale(1.03);
+    }
+
+        .nav-item2:hover::after {
+            transform: scale(1);
+        }
+.navbar-brand {
+    transition: all 300ms;
+}
+    .navbar-brand:hover {
+        transform: scale(1.03);
+    }
+        .navbar-brand:hover::after {
+            transform: scale(1);
+        }

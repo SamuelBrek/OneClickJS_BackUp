@@ -1,5 +1,6 @@
 ﻿using OneClickJS.Data.Models.Base;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OneClickJS.Data.Models
 {

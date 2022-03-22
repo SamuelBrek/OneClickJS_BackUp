@@ -24,5 +24,17 @@ namespace OneClickJS.Data.Models
             string nomuser = usuarios.Where(usr => usr.IdUsuario == IdUsuario).Select(usr => usr.FullName()).FirstOrDefault();
             return nomuser;
         }
+
+        public int ObtenerEmpresaMedianteEmpleo(IList<Empleo> empleos)
+        {
+            int idempresa = empleos.Where(emp => emp.IdEmpleo == IdEmpleo).Select(emp => emp.IdEmpresa).FirstOrDefault();
+            return idempresa;
+        }
+        public string FotoEmpresa(IList<Empresa> empresas, IList<Empleo> empleos)
+        {
+            int idEmpresa = ObtenerEmpresaMedianteEmpleo(empleos);
+            string fotoEmpresa = empresas.Where(empresa => empresa.IdEmpresa == idEmpresa).Select(empresa => empresa.FotoEmpresa).FirstOrDefault();
+            return fotoEmpresa;
+        }
     }
 }

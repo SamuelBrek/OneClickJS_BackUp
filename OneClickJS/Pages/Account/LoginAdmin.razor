@@ -1,6 +1,7 @@
 ﻿@page "/login"
 @using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Mvc
+@using OneClickJS.Auth
 @using OneClickJS.Data.Models
 @using Microsoft.AspNetCore.Mvc.RazorPages;
 @using OneClickJS.Data
@@ -12,52 +13,221 @@
 @using System.Text.Json
 @using static OneClickJS.Helpers.IJSExtensions
 @inject NavigationManager NavigationManager
+@inject ILocalStorage LocalStorage
 
 
-<h3 class="display-4">Inicio de sesión</h3>
-<p class="mb-4 textStyle">Inicia sesión para un mejor recorrido en la aplicación</p>
-<form>
-    <div class="form-group mb-3">
-        <input id="inputEmail" type="email" placeholder="Correo Electrónico" required="" autofocus="" class="form-control rounded-pill border-0 shadow-sm px-4">
-    </div>
-    <div class="form-group mb-3">
-        <input id="inputPassword" type="password" placeholder="Contraseña" required="" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
-    </div>
 
-    <button type="submit" class="btn btn-info btn-block text-uppercase mb-2 rounded-pill shadow-sm">Ingresar</button>
+<section>
+    <center>
+        <a href="/" class="regresar"><span class="oi oi-arrow-thick-left"></span> Regresar a página principal</a>
+        <h1>Inicio de sesión</h1>
+    </center>
 
-</form>
-<br />
-<a href="/register" style="color:white;">¿No tienes cuenta? Regístrate aquí</a>
+    <p class="mb-4 textStyle">Inicia sesión para un mejor recorrido en la aplicación</p>
+    <EditForm Model="@acceso">
+        <form class="container-border" @onsubmit="Save">
+            <DataAnnotationsValidator />
+            <div class="input-group mb-3">
+                <span class="input-group-text spans" id="basic-addon1">Correo</span>
+                <InputText class="form-control inputs" type="email" required="" placeholder="ejemplo@gmail.com" @bind-Value="@acceso.emailAddress" aria-label="ejemplo@gmail.com" aria-describedby="basic-addon1" />
+                <ValidationMessage For="@(() => acceso.emailAddress)" />
+            </div>
+
+
+            <div class="input-group mb-3">
+                <span class="input-group-text spans" id="basic-addon2">Contraseña</span>
+                <InputText type="password" class="form-control inputs" required="" placeholder="contraseña" @bind-Value="@acceso.password" aria-label="contraseña" aria-describedby="basic-addon2" />
+                <ValidationMessage For="@(() => acceso.password)" />
+            </div>
+            <center>
+                <button type="submit" class="btn btn-info btn-block text-uppercase mb-2 rounded-pill shadow-sm">Ingresar</button>
+            </center>
+
+
+
+        </form>
+
+    </EditForm>
+    <br />
+    <center>
+        <div class="row justify-content-between">
+            <div class="col">
+                <a href="/register" class="badge sueldo span2">Registro de usuarios</a>
+            </div>
+            <div class="col">
+                <a href="/registerEmpresa" class="badge sueldo span2">Registro de empresas</a>
+            </div>
+
+        </div>
+    </center>
+
+</section>
 
 <style>
+    body {
+        background-color: #1fd1f9;
+        background-image: linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%);
+    }
+
+    .inputs {
+        border-top-right-radius: 80px;
+        border-bottom-right-radius: 80px;
+        background-color: #6a93cb;
+        background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%);
+    }
+
+    .spans {
+        border-top-left-radius: 80px;
+        border-bottom-left-radius: 80px;
+        border: none;
+        width: 28%;
+        background-color: #6e72fc;
+        background-image: linear-gradient(315deg, #6e72fc 0%, #ad1deb 74%);
+        color: white;
+    }
+
     .login,
     .image {
-        min-height: 100vh;
+        min-height: 85vh;
+    }
+
+    .regresar {
+        color: lightblue;
+        
     }
 
     .bg-image {
-        background-image: url('https://therichpost.com/wp-content/uploads/2021/02/login-split.jpg');
+        background-image: url(/img/login.jpg);
         background-size: cover;
         background-position: center center;
     }
 
     .sideInfo {
-        background-color: #fce055;
-        background-image: linear-gradient(319deg, #fce055 0%, #256eff 37%, #46237a 100%);
+        background-color: #4c4177;
+        background-image: linear-gradient(315deg, #4c4177 0%, #2a5470 74%);
     }
 
     .textStyle {
         color: white;
     }
+
+    section {
+        margin: 1%;
+    }
+
+    h1 {
+        color: white;
+        font-family: 'Agency FB';
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .vacantes {
+        background-color: darkred;
+        font-size: 10px;
+    }
+
+    .sueldo {
+        background-color: darkgreen;
+    }
+
+    .tipo {
+        background-color: transparent;
+    }
+
+    .tipo2 {
+        background-color: darkblue;
+    }
+
+
+    .span2 {
+        border-radius: 110px;
+    }
+
+    .item {
+        background-clip: border-box;
+        border-radius: 35px 0;
+        overflow: hidden;
+        box-shadow: 0 0 5px 0 rgba(0,0,0,.095);
+        transition: all 300ms;
+        position: relative;
+    }
+
+
+
+        .item:hover:after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .item:hover {
+            transform: scale(1.01);
+        }
+
+    .item-text {
+        padding: 1em;
+    }
+
+    .item-img {
+        max-width: 100%;
+        display: block;
+    }
 </style>
 
+
 @code {
-    
-    //protected async Task Save()
-    //{
-    //    NavigationManager.NavigateTo("/");
-    //    string title = "Sesión iniciada con exito";
-    //    await JS.InvokeVoidAsync("SignUpSuccessfully", title);
-    //}
+    Acceso acceso = new Acceso();
+    Usuario usuario = new Usuario();
+    Empresa empresa = new Empresa();
+    //string mensajito = "null";
+
+    protected async Task Save()
+    {
+        try
+        {
+            usuario = await http.GetFromJsonAsync<Usuario>($"api/Usuario/Login/{acceso.emailAddress}/{acceso.password}");
+            acceso.id = usuario.IdUsuario;
+            acceso.rol = usuario.NivelUsuario;
+            acceso.emailAddress = usuario.CorreoUsuario;
+            await LocalStorage.SetValue<Acceso>(ValuesKeys.Persona, acceso);
+            //session.password = usuario.ContraseñaUsuario;
+            //mensajito = acceso.rol;
+
+
+
+
+            await JS.InvokeVoidAsync("SuccessfulLogin");
+            await Task.Delay(1500);
+            NavigationManager.NavigateTo("/");
+
+
+        }
+        catch
+        {
+            try
+            {
+                empresa = await http.GetFromJsonAsync<Empresa>($"api/Empresa/Login/{acceso.emailAddress}/{acceso.password}");
+                acceso.id = empresa.IdEmpresa;
+                acceso.rol = empresa.NivelEmpresa;
+                acceso.emailAddress = empresa.CorreoEmpresa;
+                await LocalStorage.SetValue<Acceso>(ValuesKeys.Persona, acceso);
+                //session.password = empresa.ContraseniaEmpresa;
+                //mensajito = acceso.rol;
+                await JS.InvokeVoidAsync("SuccessfulLogin");
+                await Task.Delay(1500);
+                NavigationManager.NavigateTo("/");
+            }
+            catch
+            {
+                await JS.InvokeVoidAsync("ErrorLogin");
+            }
+
+        }
+
+
+
+
+    }
 }

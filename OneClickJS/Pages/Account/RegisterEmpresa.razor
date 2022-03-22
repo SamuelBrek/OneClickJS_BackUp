@@ -1,0 +1,299 @@
+﻿@page "/registerEmpresa"
+@using Microsoft.AspNetCore.Hosting
+@using OneClickJS.Auth
+@inject HttpClient http
+@inject NavigationManager NavigationManager
+@using OneClickJS.Data.Models
+@inject IJSRuntime JS;
+@using System.Net.Http.Json
+@inject IWebHostEnvironment env;
+@using System.IO
+@using static OneClickJS.Helpers.IJSExtensions
+<center>
+    <a href="/login" class="regresar"><span class="oi oi-arrow-thick-left"></span> Regresar a inicio de sesión</a>
+    <h1>Creación de cuenta empresa</h1>
+    <p class="mb-4 textStyle">Registrate e inicia sesión para encontrar tus nuevos aspirantes</p>
+</center>
+
+
+<EditForm Model="@empresa">
+    <form class="container-border" @onsubmit="Save">
+        <DataAnnotationsValidator />
+        <div class="input-group mb-3">
+            <span class="input-group-text spans" id="nom_empresa">Nombre</span>
+            <InputText placeholder="nombre de empresa" class="form-control inputs" required="" @bind-Value="@empresa.NombreEmpresa" id="nom_empresa"></InputText>
+            <ValidationMessage For="@(() => empresa.NombreEmpresa)" />
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text spans" id="nom_director">Director</span>
+            <InputText class="form-control inputs" placeholder="director de empresa" required="" @bind-Value="@empresa.DirectorEmpresa" id="nom_director"></InputText>
+            <ValidationMessage For="@(() => empresa.DirectorEmpresa)" />
+        </div>
+        <center>
+            <h5>Dirección</h5>
+        </center>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <span class="input-group-text spansDirec" id="calle">Calle</span>
+                    <InputText class="form-control inputs" placeholder="123.." required="" @bind-Value="@empresa.CalleEmpresa" id="calle"></InputText>
+                    <ValidationMessage For="@(() => empresa.CalleEmpresa)" />
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <span class="input-group-text spansDirec" id="numero">Número</span>
+                    <InputText class="form-control inputs" required="" placeholder="244.." @bind-Value="@empresa.NumeroEmpresa" id="numero"></InputText>
+                    <ValidationMessage For="@(() => empresa.NumeroEmpresa)" />
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <span class="input-group-text spansDirec" id="cruzamiento">Cruce</span>
+                    <InputText class="form-control inputs" placeholder="NAxNB" required="" @bind-Value="@empresa.CruzamientoEmpresa" id="cruzamiento"></InputText>
+                    <ValidationMessage For="@(() => empresa.CruzamientoEmpresa)" />
+                </div>
+            </div>
+            <div class="col">
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text spansDirec" id="colonia">Colonia</span>
+                    <InputText class="form-control inputs" required="" placeholder="colonia" @bind-Value="@empresa.ColoniaEmpresa" id="colonia"></InputText>
+                    <ValidationMessage For="@(() => empresa.ColoniaEmpresa)" />
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+        <div class="input-group mb-3">
+            <span class="input-group-text spansDirec" id="telefono"><span class="oi oi-phone"></span></span>
+            <InputText class="form-control inputs" required="" placeholder="teléfono" @bind-Value="@empresa.TelefonoEmpresa" id="telefono"></InputText>
+            <ValidationMessage For="@(() => empresa.TelefonoEmpresa)" />
+        </div>
+
+
+        <div class="input-group mb-3">
+            <span class="input-group-text spans" id="municipio">Municipio</span>
+            <InputText class="form-control inputs" placeholder="municipio" required="" @bind-Value="@empresa.MunicipioEmpresa" id="municipio"></InputText>
+            <ValidationMessage For="@(() => empresa.MunicipioEmpresa)" />
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text spans" id="correoEmpresa">Correo</span>
+            <InputText class="form-control inputs" type="email" placeholder="ejemplo@gmail.com" required="" @bind-Value="@empresa.CorreoEmpresa" id="correoEmpresa"></InputText>
+            <ValidationMessage For="@(() => empresa.CorreoEmpresa)" />
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text spans" id="contraseniaEmpresa">Contraseña</span>
+            <InputText class="form-control inputs" required="" placeholder="contraseña" @bind-Value="@empresa.ContraseniaEmpresa" id="contraseniaEmpresa"></InputText>
+            <ValidationMessage For="@(() => empresa.ContraseniaEmpresa)" />
+        </div>
+        <center>
+            <h5>@Message</h5>
+        </center>
+
+        <div class="input-group mb-3">
+
+
+            <InputFile required="" class="form-control" OnChange="OnInputFileChange" multiple @bind-Value="@empresa.FotoEmpresa" id="FotoEmpresa"></InputFile>
+            <label class="input-group-text spanFoto" for="FotoEmpresa">Foto</label>
+            <ValidationMessage For="@(() => empresa.FotoEmpresa)" />
+        </div>
+        <button type="submit" class="btn btn-info btn-block text-uppercase mb-2 rounded-pill shadow-sm">Registrarse</button>
+    </form>
+</EditForm>
+
+<style>
+    body {
+        background-color: #1fd1f9;
+        background-image: linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%);
+    }
+
+    .inputs {
+        border-top-right-radius: 80px;
+        border-bottom-right-radius: 80px;
+        background-color: #6a93cb;
+        background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%);
+    }
+
+    .regresar {
+        color: lightblue;
+    }
+
+    h5 {
+        color: white;
+    }
+
+    .spans {
+        border-top-left-radius: 80px;
+        border-bottom-left-radius: 80px;
+        border: none;
+        width: 28%;
+        background-color: #6e72fc;
+        background-image: linear-gradient(315deg, #6e72fc 0%, #ad1deb 74%);
+        color: white;
+    }
+
+    .spansDirec {
+        border-top-left-radius: 80px;
+        border-bottom-left-radius: 80px;
+        border: none;
+        background-color: #6e72fc;
+        background-image: linear-gradient(315deg, #6e72fc 0%, #ad1deb 74%);
+        color: white;
+    }
+
+    .spanFoto {
+        border-top-right-radius: 80px;
+        border-bottom-right-radius: 80px;
+        border: none;
+        background-color: #6e72fc;
+        background-image: linear-gradient(315deg, #6e72fc 0%, #ad1deb 74%);
+        color: white;
+    }
+
+    .login,
+    .image {
+        min-height: 100vh;
+    }
+
+    .bg-image {
+        background-image: url(/img/login.jpg);
+        background-size: cover;
+        background-position: center center;
+    }
+
+    .sideInfo {
+        background-color: #4c4177;
+        background-image: linear-gradient(315deg, #4c4177 0%, #2a5470 74%);
+    }
+
+    .textStyle {
+        color: white;
+    }
+
+    section {
+        margin: 1%;
+    }
+
+    h1 {
+        color: white;
+        font-family: 'Agency FB';
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .vacantes {
+        background-color: darkred;
+        font-size: 10px;
+    }
+
+    label {
+        color: white;
+    }
+
+    .sueldo {
+        background-color: darkgreen;
+    }
+
+    .tipo {
+        background-color: transparent;
+    }
+
+    .tipo2 {
+        background-color: darkblue;
+    }
+
+
+    .span2 {
+        border-radius: 110px;
+    }
+
+    .item {
+        background-clip: border-box;
+        border-radius: 35px 0;
+        overflow: hidden;
+        box-shadow: 0 0 5px 0 rgba(0,0,0,.095);
+        transition: all 300ms;
+        position: relative;
+    }
+
+
+
+        .item:hover:after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .item:hover {
+            transform: scale(1.01);
+        }
+
+    .item-text {
+        padding: 1em;
+    }
+
+    .item-img {
+        max-width: 100%;
+        display: block;
+    }
+</style>
+
+@code {
+    Empresa empresa = new Empresa();
+    string Message = "Ningún archivo selecionado";
+    IReadOnlyList<IBrowserFile> selectedFiles;
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFiles = e.GetMultipleFiles();
+        Message = $"{selectedFiles.Count} archivo seleccionado";
+        this.StateHasChanged();
+
+    }
+    protected async Task ConfirmarSubida()
+    {
+        await JS.SaveData("Procedimiento exitoso!", TipoMensajeSweetAlert.success);
+    }
+    protected async Task Save()
+    {
+        foreach (var file in selectedFiles)
+        {
+            var route = empresa.FotoEmpresa;
+            Stream stream = file.OpenReadStream();
+
+            var path = $"{env.WebRootPath}\\img\\empresas\\{file.Name}";
+
+            empresa.FotoEmpresa = file.Name;
+            FileStream fs = File.Create(path);
+            await stream.CopyToAsync(fs);
+            stream.Close();
+            fs.Close();
+
+        }
+        Message = $"{selectedFiles.Count} archivo subido al servidor";
+        this.StateHasChanged();
+        empresa.NivelEmpresa = "Empresa";
+        HttpResponseMessage response;
+
+        response = await http.PostAsJsonAsync<Empresa>("api/Empresa/Create", empresa);
+        if (response.IsSuccessStatusCode)
+        {
+            await ConfirmarSubida();
+        }
+
+        Empresa saved = response.Content.ReadFromJsonAsync<Empresa>().Result;
+        await Task.Delay(1500);
+        NavigationManager.NavigateTo("/login");
+    }
+
+}

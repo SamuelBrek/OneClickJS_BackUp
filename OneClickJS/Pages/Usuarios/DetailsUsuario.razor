@@ -2,68 +2,83 @@
 @using OneClickJS.Data.Models
 @using OneClickJS.Data
 @inject HttpClient http
+@inject IJSRuntime JS
 @using System.Net.Http
 @using System.Net.Http.Json
 @inject NavigationManager NavigationManager;
 <center>
-<div class="container justify-content-center">
-<h1>Detalles de usuario</h1>
-<br />
-    <div class="row justify-content-center">
-        <div class="col justify-content-center">
-            <a class="btn btn-info" href="/usuarios/update/@usuario.IdUsuario">Editar</a>
+    <div class="container justify-content-center">
+        <h1>Detalles de usuario</h1>
+        <br />
+        <div class="row justify-content-center">
+            <div class="col justify-content-center">
+                <a class="btn btn-info" href="/usuarios/update/@usuario.IdUsuario">Editar</a>
+            </div>
+            <div class="col justify-content-center">
+                <a class="btn btn-danger" href="/usuarios">Regresar</a>
+            </div>
+
         </div>
-        <div class="col justify-content-center">
-            <a class="btn btn-danger" href="/usuarios">Regresar</a>
-        </div>
+
+        <br />
 
     </div>
-    
-<br />
-
-</div>
 </center>
 
 
 <center>
-<div class="container justify-content-center">
+    <div class="container justify-content-center">
 
 
-<div class="card item text-center">
-  <div class="card-header centerText">
-    Nombre de usuario: @usuario.FullName()
-  </div>
-  <img src="img/user_icon.png" alt="...">
-  <div class="card-body">
-    <h5 class="card-title">Información</h5>
-    <p class="card-text"><span class="badge vacantes">Correo Electrónico</span> @usuario.CorreoUsuario</p>
-  </div>
-  <div class="card-footer justify-content-center">
-        <span class="badge tipo">Rol:</span> @usuario.NivelUsuario
-      </div>
+        <div class="card item text-center">
+            <div class="card-header centerText">
+                Nombre de usuario: @usuario.FullName()
+            </div>
+            <img src="img/user_icon.png" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Información</h5>
+                <p class="card-text"><span class="badge vacantes">Correo Electrónico</span> @usuario.CorreoUsuario</p>
+            </div>
+            <div class="card-footer justify-content-center">
+                <span class="badge tipo">Rol:</span> @usuario.NivelUsuario
+            </div>
 
-  </div>
-</div>
+        </div>
+    </div>
 </center>
 
 
 
 @code {
     [Parameter]
-    public int id{ get; set; }
+    public int id { get; set; }
     Usuario usuario = new Usuario();
-
+    private Acceso session = new Acceso();
 
     protected override async Task OnInitializedAsync()
     {
-            var response = await http.GetFromJsonAsync<Usuario>($"api/Usuario/{id}");
-           
-            if (response != null)
+        session = IsDataNull.CreateInstanceIfIsNull<Acceso>(await LocalStorage.GetValue<Acceso>(ValuesKeys.Persona));
+        if (session.rol == null)
+        {
+            NavigationManager.NavigateTo("/login");
+            await JS.InvokeVoidAsync("NotAllowed");
+        }
+        else
+        {
+            if (session.rol == "Usuario" || session.rol == "Empresa")
             {
-                usuario = response;
-                
+                NavigationManager.NavigateTo("/");
+                await JS.InvokeVoidAsync("NotAllowed");
             }
-        
+        }
+        var response = await http.GetFromJsonAsync<Usuario>($"api/Usuario/{id}");
+
+        if (response != null)
+        {
+            usuario = response;
+
+        }
+
     }
 
 }

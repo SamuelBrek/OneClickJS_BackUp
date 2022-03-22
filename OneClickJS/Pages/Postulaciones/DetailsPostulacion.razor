@@ -80,7 +80,11 @@
         <button class="btn btn-info" @onclick="()=>ShowOnNewTab(postulacion.ArchivoPostulacion)">Ver CV en otra pestaña</button>
         <br />
         <br />
-        <a class="btn btn-info" href="/postulaciones/update/@postulacion.IdPostulacion">Cambiar estado</a>
+        @if(session.rol == "Empresa")
+        {
+            <a class="btn btn-info" href="/postulaciones/update/@postulacion.IdPostulacion">Cambiar estado</a>
+        }
+        
     </center>
     <br />
     @if (!string.IsNullOrEmpty(@archivoPDF))
@@ -104,6 +108,7 @@
     public string archivoPDF = "";
     Postulacione postulacion = new Postulacione();
     Empleo empleo = new Empleo();
+    private Acceso session = new Acceso();
     Usuario usuario = new Usuario();
     Categoria categoria = new Categoria();
     Empresa empresa = new Empresa();
@@ -111,6 +116,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        session = IsDataNull.CreateInstanceIfIsNull<Acceso>(await LocalStorage.GetValue<Acceso>(ValuesKeys.Persona));
+        if(session.rol == null)
+        {
+            NavigationManager.NavigateTo("/login");
+            await JS.InvokeVoidAsync("NotAllowed");
+        }
         var response = await http.GetFromJsonAsync<Postulacione>($"api/Postulacion/{id}");
 
         if (response != null)

@@ -10,6 +10,7 @@
 @using static OneClickJS.Helpers.IJSExtensions
 @inject HttpClient http
 @using Microsoft.AspNetCore.Hosting;
+@using OneClickJS.Helpers
 @inject IWebHostEnvironment env
 @inject NavigationManager NavigationManager
 
@@ -18,31 +19,87 @@
 
     <EditForm Model="@postulacion">
         <form class="container-border" @onsubmit="Save">
+            <DataAnnotationsValidator />
             @if (isUpdate == false)
             {
-                <div class="mb-2">
-                    <h3>@Message</h3>
-                    <label class="form-label" for="archivoPost">Sube aquí tu CV (Currículum Vitae)</label>
-                    <InputFile class="form-control" OnChange="OnInputFileChange" multiple @bind-Value="@postulacion.ArchivoPostulacion" id="archivoPost"></InputFile>
+
+
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text spans" id="disabledTextInput1">Aspirante</span>
+
+                            <input type="text" id="disabledTextInput1" class="form-control inputs" placeholder="@usuario.CorreoUsuario" disabled>
+
+
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text spans" id="disabledTextInput">Empleo </span>
+
+                            <input type="text" id="disabledTextInput" class="form-control inputs" placeholder="@empleo.NombreEmpleo" disabled>
+
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-2">
-                    <label class="form-label" for="usuarioReferente">Usuario referente</label>
-                    <InputNumber class="form-control" @bind-Value="@postulacion.IdUsuario" id="usuarioReferente"></InputNumber>
+
+                <br />
+
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <center>
+                        <div class="input-group mb-3">
+                            
+                                <h3>@Message</h3>
+                            
+
+
+                        </div>
+                        </center>
+                    </div>
                 </div>
-                <div class="mb-2">
-                    <label for="disabledTextInput" class="form-label">Empleo referente</label>
-                    <input type="text" id="disabledTextInput" class="form-control" placeholder="@empleo.NombreEmpleo" disabled>
+
+
+
+
+
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text spans" id="disabledTextInput2">Estado</span>
+
+                            <input type="text" id="disabledTextInput2" class="form-control inputs" placeholder="Pendiente" disabled>
+
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="input-group mb-3">
+
+
+                            <InputFile class="form-control" required="" OnChange="OnInputFileChange" multiple @bind-Value="@postulacion.ArchivoPostulacion" id="archivoPost"></InputFile>
+                            <label class="input-group-text spanFoto" for="archivoPost">Subir CV</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-2">
-                    <label for="disabledTextInput2" class="form-label">Estado actual de postulación</label>
-                    <input type="text" id="disabledTextInput2" class="form-control" placeholder="Pendiente" disabled>
-                </div>
+
+
+
+
+
+
             }
             @if (isUpdate)
             {
-                <div class="mb-2">
-                    <label class="form-label" for="estadoPostulacion">Estado de la postulación</label>
-                    <InputSelect class="form-control" @bind-Value="@postulacion.EstadoPostulacion" id="estadoPostulacion">
+                <div class="input-group mb-3">
+                    <span class="input-group-text spans" id="estadoPostulacion">Estado actual de postulación</span>
+                   
+                    <InputSelect class="form-control inputs" @bind-Value="@postulacion.EstadoPostulacion" id="estadoPostulacion">
                         <option value="Pendiente">Pendiente</option>
                         <option value="Aceptado">Aceptado</option>
                         <option value="Rechazado">Rechazado</option>
@@ -56,20 +113,66 @@
     </EditForm>
 </div>
 
+
+<style>
+    .inputs {
+        border-top-right-radius: 95px !important;
+        border-bottom-right-radius: 95px !important;
+        /*    background-color: #6a93cb !important;
+                            background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%) !important;*/
+    }
+
+    .spanFoto {
+        border-top-right-radius: 80px;
+        border-bottom-right-radius: 80px;
+        border: none;
+        background-color: #29539b;
+        background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        color: white;
+    }
+
+    .spandescrip {
+        border-top-left-radius: 80px !important;
+        border-bottom-left-radius: 80px !important;
+        border: none !important;
+        width: 13.5% !important;
+        background-color: #29539b;
+        background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        color: white !important;
+    }
+
+    .spans {
+        border-top-left-radius: 80px !important;
+        border-bottom-left-radius: 80px !important;
+        border: none !important;
+        width: 28% !important;
+        background-color: #29539b;
+        background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        color: white !important;
+    }
+</style>
 @code {
     [Parameter]
     public int id { get; set; }
     [Parameter]
     public int id2 { get; set; }
-
     public bool isUpdate { get; set; } = false;
     Postulacione postulacion = new Postulacione();
+    private Acceso session = new Acceso();
+
+
     Empleo empleo = new Empleo();
+    Usuario usuario = new Usuario();
     string Message = "Ningún archivo selecionado";
     IReadOnlyList<IBrowserFile> selectedFiles;
     protected override async Task OnInitializedAsync()
     {
-
+        session = IsDataNull.CreateInstanceIfIsNull<Acceso>(await LocalStorage.GetValue<Acceso>(ValuesKeys.Persona));
+        if (session.rol == null)
+        {
+            NavigationManager.NavigateTo("/login");
+            await JS.InvokeVoidAsync("NotAllowed");
+        }
 
         isUpdate = id != 0;
         if (isUpdate)
@@ -79,9 +182,18 @@
             {
                 postulacion = response;
             }
+            if (session.rol == "Usuario")
+            {
+                NavigationManager.NavigateTo("/");
+                await JS.InvokeVoidAsync("NotAllowed");
+            }
+
+
+
         }
         else
         {
+            usuario = await http.GetFromJsonAsync<Usuario>($"api/Usuario/{session.id}");
             empleo = await http.GetFromJsonAsync<Empleo>($"api/Empleo/{id2}");
         }
     }
@@ -150,7 +262,9 @@
 
 
         HttpResponseMessage response;
+        postulacion.IdUsuario = session.id;
         postulacion.IdEmpleo = id2;
+
         if (isUpdate)
         {
             response = await http.PutAsJsonAsync<Postulacione>($"api/Postulacion/Update/{id}", postulacion);
