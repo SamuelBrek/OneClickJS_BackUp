@@ -23,8 +23,11 @@
                 <span class="input-group-text spandescrip" for="nameCategoria">Nombre de categoría</span>
                 <InputText class="form-control inputs" required="" @bind-Value="@categoria.NombreCategoria" id="nameCategoria"></InputText>
             </div>
-            <button type="submit" class="btn btn-success">Guardar</button>
-            <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
+            <center>
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
+            </center>
+
         </form>
     </EditForm>
 </div>
@@ -34,7 +37,7 @@
         border-top-right-radius: 95px !important;
         border-bottom-right-radius: 95px !important;
         /*    background-color: #6a93cb !important;
-                                            background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%) !important;*/
+                                                background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%) !important;*/
     }
 
     .spanFoto {
@@ -77,7 +80,7 @@
     protected override async Task OnInitializedAsync()
     {
         session = IsDataNull.CreateInstanceIfIsNull<Acceso>(await LocalStorage.GetValue<Acceso>(ValuesKeys.Persona));
-        if(session.rol == null || session.rol == "Usuario" || session.rol == "Empresa")
+        if (session.rol == null || session.rol == "Usuario" || session.rol == "Empresa")
         {
             NavigationManager.NavigateTo("/login");
             await JS.InvokeVoidAsync("NotAllowed");

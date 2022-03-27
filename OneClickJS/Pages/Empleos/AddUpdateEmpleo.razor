@@ -23,7 +23,7 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text spans" id="inputGroup-sizing-default">Nombre</span>
                         <InputText class="form-control inputs" required="" @bind-Value="@empleo.NombreEmpleo" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
-                        
+
                     </div>
                 </div>
                 <div class="col">
@@ -137,7 +137,7 @@
                     else
                     {
                         <div class="input-group mb-3">
-                            <span class="input-group-text spans"  for="inputGroupSelect03">Empresa</span>
+                            <span class="input-group-text spans" for="inputGroupSelect03">Empresa</span>
                             <select class="form-select inputs" disabled="" id="inputGroupSelect03">
                                 <option value="-1">@session.emailAddress</option>
                             </select>
@@ -147,10 +147,12 @@
                 </div>
             </div>
 
+            <center>
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
+            </center>
 
 
-            <button type="submit" class="btn btn-success">Guardar</button>
-            <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
         </form>
     </EditForm>
 </div>
@@ -159,15 +161,15 @@
         border-top-right-radius: 95px !important;
         border-bottom-right-radius: 95px !important;
         /*    background-color: #6a93cb !important;
-            background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%) !important;*/
+                background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%) !important;*/
     }
 
     .spanFoto {
         border-top-right-radius: 80px;
         border-bottom-right-radius: 80px;
         border: none;
-background-color: #29539b;
-background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        background-color: #29539b;
+        background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
         color: white;
     }
 
@@ -176,8 +178,8 @@ background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
         border-bottom-left-radius: 80px !important;
         border: none !important;
         width: 13.5% !important;
-background-color: #29539b;
-background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        background-color: #29539b;
+        background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
         color: white !important;
     }
 
@@ -186,8 +188,8 @@ background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
         border-bottom-left-radius: 80px !important;
         border: none !important;
         width: 28% !important;
-background-color: #29539b;
-background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
+        background-color: #29539b;
+        background-image: linear-gradient(315deg, #29539b 0%, #1e3b70 74%);
         color: white !important;
     }
 </style>

@@ -145,9 +145,11 @@
                 <span class="input-group-text spanFoto" id="FotoEmpresa">Foto de empresa</span>
             </div>
 
+            <center>
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
+            </center>
 
-            <button type="submit" class="btn btn-success">Guardar</button>
-            <a class="btn btn-danger" @onclick="() => CancelarSubida()">Cancelar</a>
         </form>
     </EditForm>
 </div>
@@ -158,7 +160,7 @@
         border-top-right-radius: 95px !important;
         border-bottom-right-radius: 95px !important;
         /*    background-color: #6a93cb !important;
-                                            background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%) !important;*/
+                                                background-image: linear-gradient(315deg, #6a93cb 0%, #a4bfef 74%) !important;*/
     }
 
     .spanFoto {

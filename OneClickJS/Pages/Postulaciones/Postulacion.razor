@@ -23,7 +23,20 @@
     {
         @if (postulaciones.Count() == 0)
         {
-            <p>No tiene postulaciones</p>
+            <center>
+                <h2>No tiene postulaciones</h2>
+                <div class="carta-box">
+                    <div class="carta">
+                        <div class="cara">
+                            <img src="/img/None.png">
+                        </div>
+                        <div class="cara detras">
+                            <img src="/img/None2.png">
+                        </div>
+                    </div>
+                </div>
+            </center>
+
         }
         else
         {
@@ -66,6 +79,9 @@
 
     }
 </div>
+
+
+
 @code {
     private readonly string api = "api/Postulacion/GetPostulaciones2";
     private IEnumerable<Postulacione> postulaciones;

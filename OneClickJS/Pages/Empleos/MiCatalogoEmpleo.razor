@@ -37,11 +37,7 @@
 
     <p>Mis empelos registrados</p>
 
-    <div class="input-group mb-2 mr-sm-2">
-        <input type="text" class="form-control" @bind="nombreEmpleoFiltro" placeholder="Filtro por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
-        <button class="btn btn-primary" type="button" id="button-addon2" @onclick="Filtrar"><i class="oi oi-magnifying-glass"></i></button>
-        <button class="btn btn-danger" type="button" id="button-addon2" @onclick="Limpiar"><i class="oi oi-delete"></i></button>
-    </div>
+
 
 
     @if (empleos == null)
@@ -50,84 +46,116 @@
     }
     else
     {
-        <br />
-        <div class="row row-cols-1 row-cols-md-3">
-            @foreach (var empleo in empleos)
-            {
-                <center>
-                    <div class="col">
-                        <div class="card item" style="max-width: 21rem">
-                            <div class="card-header justify-content-center">
-                                <div class="col-auto justify-content-center">
-                                    <span class="badge tipo">@empleo.ObtenerNameCat(categorias)</span>
 
-                                </div>
-                            </div>
-                            <img src="img/empleos/@empleo.FotoEmpleo" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">@empleo.NombreEmpleo</h5>
-                                <p class="card-text">@empleo.DescripcionEmpleo</p>
-                                <div class="row justify-content-center">
-                                    <div class="col">
-                                        <span class="badge vacantes span2">Vacantes</span>
-                                    </div>
-                                    <div class="col">
-                                        <span class="badge sueldo span2">Sueldo</span>
-                                    </div>
-                                    <div class="col">
-                                        <span class="badge tipo2 span2">Tipo</span>
-                                    </div>
-                                </div>
-                                <div class="row justify-content-center">
-                                    <div class="col">
-                                        @empleo.VacantesEmpleo
-                                    </div>
-                                    <div class="col">
-                                        @empleo.SueldoEmpleo
-                                    </div>
-                                    <div class="col">
-                                        @empleo.TipoEmpleo
-                                    </div>
-                                </div>
-                                <br />
+        @if (empleos.Count() == 0)
+        {
 
-
-                                <div class="row">
-                                    <div class="col">
-                                        <span class="icon">
-                                            <a href="/empleos/@empleo.IdEmpleo" class="btn btn-info btnCurv" title="Detalle"><i class="oi oi-eye"></i></a>
-                                        </span>
-                                    </div>
-                                    @if (session.rol == "Administrador" || session.rol == "Empresa")
-                                    {
-                                        <div class="col">
-                                            <span class="icon">
-                                                <a class="btn btn-danger btnCurv" title="Eliminar" @onclick="() => ConfirmDelete(empleo.IdEmpleo, empleo.NombreEmpleo, empleo.FotoEmpleo)"><i class="oi oi-trash"></i></a>
-                                            </span>
-                                        </div>
-                                    }
-
-                                </div>
-
-
-
-                                <!--<a href="#" class="btn btn-primary">Detalles</a>-->
-                    </div>
-                            <div class="card-footer justify-content-center">
-                                <span class="badge span2" style="background-color:black">@empleo.ObtenerNameEmpr(empresas)</span>
-                            </div>
+            <center>
+                <h2>No tiene empleos</h2>
+                <div class="carta-box">
+                    <div class="carta">
+                        <div class="cara">
+                            <img src="/img/None.png">
+                        </div>
+                        <div class="cara detras">
+                            <img src="/img/None2.png">
                         </div>
                     </div>
-                </center>
-            }
-        </div>
+                </div>
+            </center>
+
+        }
+        else
+        {
+            <div class="input-group mb-2 mr-sm-2">
+                <input type="text" class="form-control" @bind="nombreEmpleoFiltro" placeholder="Filtro por nombre" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button class="btn btn-primary" type="button" id="button-addon2" @onclick="Filtrar"><i class="oi oi-magnifying-glass"></i></button>
+                <button class="btn btn-danger" type="button" id="button-addon2" @onclick="Limpiar"><i class="oi oi-delete"></i></button>
+            </div>
+            <br />
+            <div class="row row-cols-1 row-cols-md-3">
+                @foreach (var empleo in empleos)
+                {
+                    <center>
+                        <div class="col">
+                            <div class="card item" style="max-width: 21rem">
+                                <div class="card-header justify-content-center">
+                                    <div class="col-auto justify-content-center">
+                                        <span class="badge tipo">@empleo.ObtenerNameCat(categorias)</span>
+
+                                    </div>
+                                </div>
+                                <img src="img/empleos/@empleo.FotoEmpleo" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">@empleo.NombreEmpleo</h5>
+                                    <p class="card-text">@empleo.DescripcionEmpleo</p>
+                                    <div class="row justify-content-center">
+                                        <div class="col">
+                                            <span class="badge vacantes span2">Vacantes</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="badge sueldo span2">Sueldo</span>
+                                        </div>
+                                        <div class="col">
+                                            <span class="badge tipo2 span2">Tipo</span>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="col">
+                                            @empleo.VacantesEmpleo
+                                        </div>
+                                        <div class="col">
+                                            @empleo.SueldoEmpleo
+                                        </div>
+                                        <div class="col">
+                                            @empleo.TipoEmpleo
+                                        </div>
+                                    </div>
+                                    <br />
+
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <span class="icon">
+                                                <a href="/empleos/@empleo.IdEmpleo" class="btn btn-info btnCurv" title="Detalle"><i class="oi oi-eye"></i></a>
+                                            </span>
+                                        </div>
+                                        @if (session.rol == "Administrador" || session.rol == "Empresa")
+                                        {
+                                            <div class="col">
+                                                <span class="icon">
+                                                    <a class="btn btn-danger btnCurv" title="Eliminar" @onclick="() => ConfirmDelete(empleo.IdEmpleo, empleo.NombreEmpleo, empleo.FotoEmpleo)"><i class="oi oi-trash"></i></a>
+                                                </span>
+                                            </div>
+                                        }
+
+                                    </div>
+
+
+
+                                    <!--<a href="#" class="btn btn-primary">Detalles</a>-->
+                    </div>
+                                <div class="card-footer justify-content-center">
+                                    <span class="badge span2" style="background-color:black">@empleo.ObtenerNameEmpr(empresas)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </center>
+                }
+            </div>
+            <br />
+            <Paginacion PaginasTotales="paginasTotales" PaginaActual="paginaActual" PaginaSeleccionada="PaginaSeleccionada"></Paginacion>
+
+        }
+
+
 
 
 
     }
-    <br />
-    <Paginacion PaginasTotales="paginasTotales" PaginaActual="paginaActual" PaginaSeleccionada="PaginaSeleccionada"></Paginacion>
+
 </div>
+
 @code {
 
     private readonly string api = "api/Empleo/GetEmpleos2";

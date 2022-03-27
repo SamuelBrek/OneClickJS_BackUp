@@ -2,6 +2,48 @@
     background-color: #110C73 !important;
     margin-bottom: 0px !important;
 }
-a{
+
+a {
     color: white !important;
+    text-decoration:solid;
+    
+}
+
+i {
+    font-size: 200% !important;
+    transition: all 300ms;
+}
+
+    i:hover {
+        transform: scale(1.05);
+    }
+
+        i:hover::after {
+            transform: scale(1);
+        }
+
+h4 {
+    color: white !important;
+    font-family: 'Agency FB';
+    transition: all 300ms;
+}
+
+    h4:hover {
+        transform: scale(1.05);
+    }
+
+        h4:hover::after {
+            transform: scale(1);
+        }
+
+hr {
+    color: deepskyblue;
+    width: 110px;
+    height: 3px;
+}
+
+p {
+    color: white;
+    text-decoration: wavy;
+    
 }

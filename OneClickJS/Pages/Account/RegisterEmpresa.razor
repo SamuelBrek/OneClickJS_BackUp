@@ -93,7 +93,7 @@
 
         <div class="input-group mb-3">
             <span class="input-group-text spans" id="contraseniaEmpresa">Contraseña</span>
-            <InputText class="form-control inputs" required="" placeholder="contraseña" @bind-Value="@empresa.ContraseniaEmpresa" id="contraseniaEmpresa"></InputText>
+            <InputText class="form-control inputs" type="password" required="" placeholder="contraseña" @bind-Value="@empresa.ContraseniaEmpresa" id="contraseniaEmpresa"></InputText>
             <ValidationMessage For="@(() => empresa.ContraseniaEmpresa)" />
         </div>
         <center>
